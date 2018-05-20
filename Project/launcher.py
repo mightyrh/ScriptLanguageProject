@@ -26,8 +26,8 @@ def launcherFunction(menu):
 #       QuitBookMgr()
     elif menu == 'p':
         PrintDomtoXML()
-#    elif menu == 'b':
-#        PrintBookList(["title",])
+    elif menu == 'b':
+        PrintWeather()
 #    elif menu == 'a':
 #        ISBN = str(input ('insert ISBN :'))
 #        title = str(input ('insert Title :'))
