@@ -1,5 +1,6 @@
 loopFlag = 1
 from xmlManager import *
+from internetService import *
 
 #### Menu  implementation
 def printMenu():
@@ -48,8 +49,18 @@ def launcherFunction(menu):
 #        print("-----------------------")
     ##elif menu == 'i':
     ##    sendMain()
-    ##elif menu == "t":
-    ##    startWebService()
+    elif menu == "t":
+        date = str(input("날씨를 입력하세요 ex) 20180528 : "))
+        time = str(input("시간을 입력하세요 ex) 0600 : "))
+        x = str(input("x좌표를 입력하세요 ex) 60 : "))
+        y = str(input("y좌표를 입력하세요 ex) 127 : "))
+        data = getApi_real_time(date, time, x, y)
+        print("날짜 : ", data['date'])
+        print("시간 : ", data['time'])
+        print("x좌표 : ", data['x'])
+        print("y좌표 : ", data['y'])
+        print("기온 : ", data['temp'])
+        print("습도 : ", data['humidity'])
 
     else:
         print ("error : unknow menu key")
