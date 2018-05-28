@@ -22,8 +22,8 @@ def launcherFunction(menu):
     if menu ==  'l':
         LoadXMLFromFile()
 
-#    elif menu == 'q':
-#       QuitBookMgr()
+    elif menu == 'q':
+       QuitBookMgr()
     elif menu == 'p':
         PrintDomtoXML()
     elif menu == 'b':
@@ -54,10 +54,10 @@ def launcherFunction(menu):
     else:
         print ("error : unknow menu key")
 
-#def QuitBookMgr():
-#    global loopFlag
-#    loopFlag = 0
-#    BooksFree()
+def QuitBookMgr():
+    global loopFlag
+    loopFlag = 0
+    BooksFree()
 
 while (loopFlag > 0):
     printMenu()
