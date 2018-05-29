@@ -10,8 +10,8 @@ url = 'https://maps.googleapis.com/maps/api/geocode/json?'
 key = '&key=AIzaSyDj8yeT04xh5Rox_2Bz3jQdy2QcBmMSMlI'
 
 def SerchGeo():#위도,경도 반환
-    Sido = str(input("시나 도"))
-    Dong = str(input("동"))
+    Sido = str(input("시, 도 :"))
+    Dong = str(input("구, 동 :"))
     serch = Dong+Sido
 
     apiURL = url+urlencode({quote_plus('address'):serch})+key
