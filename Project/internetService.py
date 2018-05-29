@@ -18,12 +18,12 @@ def getApi_real_time(date, time, x, y):
 
 def extractData(strXml):
     from xml.etree import ElementTree
-    tree = ElementTree.fromstring(strXml)
-    print(strXml)
+#    tree = ElementTree.fromstring(strXml)
+#    print(strXml)
 
 
-    itemElements = tree.getiterator("item") # return list type
-    print(itemElements)
+#    itemElements = tree.getiterator("item") # return list type
+#    print(itemElements)
 #    for item in itemElements:
 #        date = item.find("basedate")
 #        time = item.find("basetime")

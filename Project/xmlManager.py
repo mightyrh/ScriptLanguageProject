@@ -83,7 +83,7 @@ def checkDocument():
         return False
     return True
 
-def PrintWeather():
+def PrintXmlData():
     global xml_Doc
     if not checkDocument():
         return None
@@ -103,3 +103,11 @@ def PrintWeather():
                 print("x좌표 = ", element.firstChild.nodeValue)
             elif element.nodeName == "ny":
                 print("y좌표 = ", element.firstChild.nodeValue)
+
+def PrintWeatherData(data):
+    print("날짜 : ", data['date'])
+    print("시간 : ", data['time'])
+    print("x좌표 : ", data['x'])
+    print("y좌표 : ", data['y'])
+    print("기온 : ", data['temp'])
+    print("습도 : ", data['humidity'])

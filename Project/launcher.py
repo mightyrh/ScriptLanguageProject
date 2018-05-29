@@ -1,6 +1,7 @@
 loopFlag = 1
 from xmlManager import *
 from internetService import *
+from map import *
 
 #### Menu  implementation
 def printMenu():
@@ -28,7 +29,7 @@ def launcherFunction(menu):
     elif menu == 'p':
         PrintDomtoXML()
     elif menu == 'b':
-        PrintWeather()
+        PrintXmlData()
 #    elif menu == 'a':
 #        ISBN = str(input ('insert ISBN :'))
 #        title = str(input ('insert Title :'))
@@ -55,12 +56,14 @@ def launcherFunction(menu):
         x = str(input("x좌표를 입력하세요 ex) 60 : "))
         y = str(input("y좌표를 입력하세요 ex) 127 : "))
         data = getApi_real_time(date, time, x, y)
-        print("날짜 : ", data['date'])
-        print("시간 : ", data['time'])
-        print("x좌표 : ", data['x'])
-        print("y좌표 : ", data['y'])
-        print("기온 : ", data['temp'])
-        print("습도 : ", data['humidity'])
+        PrintWeatherData(data)
+    elif menu == "m":
+        date = str(input("날자를 입력하세요 ex) 20180528 : "))
+        time = str(input("시간을 입력하세요 ex) 0600 : "))
+        x, y = SerchGeo()
+
+        data = getApi_real_time(date, time, x, y)
+        PrintWeatherData(data)
 
     else:
         print ("error : unknow menu key")
