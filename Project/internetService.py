@@ -4,20 +4,23 @@ from urllib.request import Request, urlopen
 from xml.dom.minidom import parseString
 
 def getApi_real_time(date, time, x, y):
+
+
+
+
     url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastGrib'
     ServiceKey = 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'
     queryParams = '?' + 'serviceKey=' + ServiceKey + '&' + urlencode({ quote_plus('base_date') : date, quote_plus('base_time') : time, quote_plus('nx') : x, quote_plus('ny') : y, quote_plus('numOfRows') : '10', quote_plus('pageNo') : '1', quote_plus('_type') : 'xml' })
 
     request = Request(url + queryParams)
-    request.get_method = lambda: 'GET'
     response_body = urlopen(request).read()
-    print (response_body)
     return extractData(response_body)
 
 def extractData(strXml):
     from xml.etree import ElementTree
     tree = ElementTree.fromstring(strXml)
     print(strXml)
+
 
     itemElements = tree.getiterator("item") # return list type
     print(itemElements)

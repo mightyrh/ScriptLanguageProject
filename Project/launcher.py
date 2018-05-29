@@ -50,7 +50,7 @@ def launcherFunction(menu):
     ##elif menu == 'i':
     ##    sendMain()
     elif menu == "t":
-        date = str(input("날씨를 입력하세요 ex) 20180528 : "))
+        date = str(input("날자를 입력하세요 ex) 20180528 : "))
         time = str(input("시간을 입력하세요 ex) 0600 : "))
         x = str(input("x좌표를 입력하세요 ex) 60 : "))
         y = str(input("y좌표를 입력하세요 ex) 127 : "))
