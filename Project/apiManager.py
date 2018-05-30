@@ -118,5 +118,5 @@ def PrintWeatherData(data):
 def get_real_time_weather(x,y):
     date, time = nowDateTime()
 
-    data = getApi_real_time_weather(date, time,x, y)
+    data = getApi_real_time_weather(date, time, x, y)
     return data

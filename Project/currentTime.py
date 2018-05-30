@@ -11,5 +11,9 @@ def nowDateTime():
     # 발표가 40분에 나는 것 같음
     if int(now.strftime('%M')) < 40:
         nowTime = str(int(nowTime) - 100)
+        if int(nowTime) < 1000:
+            nowTime = '0' + nowTime
 
     return nowDate, nowTime
+
+nowDateTime()
