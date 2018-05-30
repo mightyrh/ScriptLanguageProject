@@ -115,9 +115,8 @@ def PrintWeatherData(data):
     print("기온 : ", data['temp'])
     print("습도 : ", data['humidity'])
 
-def get_real_time_weather():
+def get_real_time_weather(x,y):
     date, time = nowDateTime()
-    x, y = SerchGeo()
 
-    data = getApi_real_time_weather(date, time, x, y)
-    PrintWeatherData(data)
+    data = getApi_real_time_weather(date, time,x, y)
+    return data
