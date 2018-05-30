@@ -77,7 +77,7 @@ def ButtonAction():
     global InputLabel
     global RenderText
     address = InputLabel.get()
-    x,y = map.SerchGeo(address)
+    x,y,mapdata = map.SerchGeo(address)
 
 
 
@@ -91,6 +91,8 @@ def ButtonAction():
         RenderText.insert(INSERT, "\t")
         RenderText.insert(INSERT, data['time'])
         RenderText.insert(INSERT, "]")
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, mapdata["results"][0]["formatted_address"])
         RenderText.insert(INSERT, "\n")
         RenderText.insert(INSERT, "온도 :")
         RenderText.insert(INSERT, data['temp'])

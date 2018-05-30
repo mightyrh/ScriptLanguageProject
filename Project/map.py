@@ -18,13 +18,13 @@ def SerchGeo(serch):#위도,경도 반환
 
 
     if responseJson['status'] == "OK":
-        responseJson = responseJson["results"][0]["geometry"]["location"]
-        x, y = grid(responseJson["lat"], responseJson["lng"])   # 위경도를 격자좌표로 변환 후 반환
-        # return responseJson["lat"], responseJson["lng"], x, y
-        return x, y
+        responselocation = responseJson["results"][0]["geometry"]["location"]
+        x, y = grid(responselocation["lat"], responselocation["lng"])   # 위경도를 격자좌표로 변환 후 반환
+        # return responselocation["lat"], responselocation["lng"], x, y
+        return x, y , responseJson
 
     else:
-        return "error","error"
+        return "error","error" ,"error"
 
 
 
