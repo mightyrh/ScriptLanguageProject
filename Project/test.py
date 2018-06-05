@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import font
 import map
-import apiManager
+import apiService
 import tkinter.messagebox
 
 g_Tk = Tk()
@@ -84,7 +84,7 @@ def ButtonAction():
     RenderText.configure(state='normal')
     RenderText.delete(0.0,END)
     if x != "error":
-        data = apiManager.get_real_time_weather(x,y)
+        data = apiService.getData_real_time_weather(x, y)
         RenderText.insert(INSERT,"날짜")
         RenderText.insert(INSERT, "[")
         RenderText.insert(INSERT, data['date'])

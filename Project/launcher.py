@@ -14,7 +14,7 @@ def printMenu():
 
 def launcherFunction(menu):
     if menu == "c":
-        get_real_time_weather()
+        getData_real_time_weather()
 #    elif menu == "f":
 #        get_weather_forecast()
     elif menu == 'q':

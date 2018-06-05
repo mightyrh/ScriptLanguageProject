@@ -4,7 +4,7 @@ from xml.dom.minidom import parse, parseString
 from xml.etree import ElementTree
 from xmlreal_time_weather import*
 from apiService import *
-from currentTime import*
+
 from map import*
 
 
@@ -115,8 +115,3 @@ def PrintWeatherData(data):
     print("기온 : ", data['temp'])
     print("습도 : ", data['humidity'])
 
-def get_real_time_weather(x,y):
-    date, time = nowDateTime()
-
-    data = getApi_real_time_weather(date, time, x, y)
-    return data
