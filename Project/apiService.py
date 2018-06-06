@@ -66,7 +66,7 @@ def getApi_medium_term_temperature(cityCode, time):
     print(url)
     request = Request(url)
     response_body = urlopen(request).read()
-    return extractData_medium_term_forecast(response_body)
+    return extractData_medium_term_temperature(response_body)
 
 def getApi_air_quality_forecast(city, category):
     url = makeUrl_air_quality_forecast(city, category)
@@ -151,7 +151,56 @@ def extractData_medium_term_forecast(strXml):
 
     return forecast
 
-#def extractData_medium_term_temperature(strXml):
+def extractData_medium_term_temperature(strXml):
+    temperature = ["", "", "", "", "", "", "", "", "", "",
+                  "", "", "", "", "", ""]
+    temperature_index = 0
+
+    dom = parseString(strXml)
+    strXml = dom
+    medium_term_temperature = strXml.childNodes
+    response = medium_term_temperature[0].childNodes
+    body = response[1].childNodes
+    items = body[0].childNodes
+    item = items[0].childNodes
+
+    for element in item:
+        if element.nodeName == "taMin3":
+            temperature_index = 0
+        elif element.nodeName == "taMax3":
+            temperature_index = 1
+        elif element.nodeName == "taMin4":
+            temperature_index = 2
+        elif element.nodeName == "taMax4":
+            temperature_index = 3
+        elif element.nodeName == "taMin5":
+            temperature_index = 4
+        elif element.nodeName == "taMax5":
+            temperature_index = 5
+        elif element.nodeName == "taMin6":
+            temperature_index = 6
+        elif element.nodeName == "taMax6":
+            temperature_index = 7
+        elif element.nodeName == "taMin7":
+            temperature_index = 8
+        elif element.nodeName == "taMax7":
+            temperature_index = 9
+        elif element.nodeName == "taMin8":
+            temperature_index = 10
+        elif element.nodeName == "taMax8":
+            temperature_index = 11
+        elif element.nodeName == "taMin9":
+            temperature_index = 12
+        elif element.nodeName == "taMax9":
+            temperature_index = 13
+        elif element.nodeName == "taMin10":
+            temperature_index = 14
+        elif element.nodeName == "taMax10":
+            temperature_index = 15
+        del temperature[temperature_index]
+        temperature.insert(temperature_index, element.firstChild.nodeValue)
+
+    return temperature
 
 #def extractData_air_quality_forecast(strXml):
 
@@ -162,4 +211,5 @@ def getData_real_time_weather(x, y):
     data = getApi_real_time_weather(date, time, x, y)
     return data
 
-print(getApi_medium_term_forecast("11B00000", "201806050600"))
+print(getApi_medium_term_forecast("11B00000", "201806060600"))
+print(getApi_medium_term_temperature("11B10101", "201806060600"))
