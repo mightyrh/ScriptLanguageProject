@@ -4,14 +4,18 @@ from urllib.request import Request, urlopen
 from xml.dom.minidom import parseString
 from currentTime import*
 
-def makeUrl_real_time_weather2(date, base_time, x, y):
+# date 는 전날로 입력 받아야 함. 전날 2000 부터 82개 받아오면 오늘 하루 치임
+# 1페이지는 오늘
+# 2페이지는 내일
+def makeUrl_real_time_weather2(date, pageNo, x, y):
     # base_time 0200 0500 0800 1100 1400 1700 2000 2300 각각 4시간 후를 예보함
     url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData'
     ServiceKey = 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'
     queryParams = '?' + 'serviceKey=' + ServiceKey + '&' + urlencode({
-                                   quote_plus('base_date'): date, quote_plus('base_time'): base_time,
-                                   quote_plus('nx'): x, quote_plus('ny'): y, quote_plus('numOfRows'): '10',
-                                   quote_plus('pageNo'): '1', quote_plus('_type'): 'xml'})
+                                   quote_plus('base_date'): date, quote_plus('base_time'): '2000',
+                                   quote_plus('nx'): x, quote_plus('ny'): y, quote_plus('numOfRows'): '82',
+                                   quote_plus('pageNo'): pageNo, quote_plus('_type'): 'xml'})
+    return url+queryParams
 
 def makeUrl_real_time_weather(date, time, x, y):
     url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastGrib'
@@ -56,8 +60,8 @@ def makeUrl_air_quality_forecast(category): # 시, 도를 입력하면 첫번째 원소가 실
     return url + queryParams
 
 ########################################################################
-def getApi_real_time_weather2(date, base_time, x, y):
-    url = makeUrl_real_time_weather2(date, base_time, x, y)
+def getApi_real_time_weather2(date, pageNo, x, y):
+    url = makeUrl_real_time_weather2(date, pageNo, x, y)
     print(url)
     request = Request(url)
     response_body = urlopen(request).read()
@@ -91,15 +95,30 @@ def getApi_air_quality_forecast(category):
     response_body = urlopen(request).read()
     return extractData_air_quality_forecast(response_body)
 
-
 ########################################################################
+# 2000 시 넘었으면
 def extractData_real_time_weather2(strXml):
+    forecast = {'today':returnDayCat(), 'tomorrow':returnDayCat()}
+
+
     dom = parseString(strXml)
     strXml = dom
     real_time_weather = strXml.childNodes
     response = real_time_weather[0].childNodes
     body = response[1].childNodes
     items = body[0].childNodes
+    for item in items:
+        data = item.childNodes
+        category = data[2].firstChild.nodeValue
+        if category == 'POP' or category == 'PTY' or category == 'REH' or category == 'SKY' or category == 'T3H' or category == 'TMN' or category == 'TMX':
+            if int(data[3].firstChild.nodeValue) == int(data[0].firstChild.nodeValue) + 1:
+                forecast['today'][data[4].firstChild.nodeValue][data[2].firstChild.nodeValue] = data[5].firstChild.nodeValue
+            elif int(data[3].firstChild.nodeValue) == int(data[0].firstChild.nodeValue) + 2:
+                forecast['tomorrow'][data[4].firstChild.nodeValue][data[2].firstChild.nodeValue] = data[5].firstChild.nodeValue
+
+    return forecast
+
+
 
 
 def extractData_real_time_weather(strXml):
@@ -198,7 +217,21 @@ def getData_real_time_weather(x, y):
     data = getApi_real_time_weather(date, time, x, y)
     return data
 
+def returnDayCat():
+    return {'0000':returnCat(), '0300':returnCat(),
+            '0600':returnCat(), '0900':returnCat(),
+            '1200':returnCat(), '1500':returnCat(),
+            '1800':returnCat(), '2100':returnCat()}
+
+def returnCat():
+    return {'POP': -999, 'PTY': -999, 'REH': -999, 'SKY': -999,
+            'T3H': -999, 'TMN': -999, 'TMX': -999}
+
+
+
+print(getApi_real_time_weather2("20180607","1","60","127"))
 print(getData_real_time_weather("60", "127"))
 print(getApi_medium_term_forecast("11B00000", "201806070600"))
 print(getApi_medium_term_temperature("11B10101", "201806070600"))
 print(getApi_air_quality_forecast("PM10"))
+
