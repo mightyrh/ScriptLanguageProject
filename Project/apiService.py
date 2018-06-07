@@ -100,7 +100,7 @@ def extractData_real_time_weather2(strXml):
     response = real_time_weather[0].childNodes
     body = response[1].childNodes
     items = body[0].childNodes
-    
+
 
 def extractData_real_time_weather(strXml):
 
@@ -199,6 +199,6 @@ def getData_real_time_weather(x, y):
     return data
 
 print(getData_real_time_weather("60", "127"))
-print(getApi_medium_term_forecast("11B00000", "201806060600"))
-print(getApi_medium_term_temperature("11B10101", "201806060600"))
+print(getApi_medium_term_forecast("11B00000", "201806070600"))
+print(getApi_medium_term_temperature("11B10101", "201806070600"))
 print(getApi_air_quality_forecast("PM10"))
