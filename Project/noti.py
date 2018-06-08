@@ -12,7 +12,7 @@ import re
 from datetime import date, datetime, timedelta
 import traceback
 import apiService
-import currentTime
+import Time
 
 key = '여기에 API KEY를 입력하세요'
 TOKEN = '503466231:AAFjBE66R0YzptpGDb6OPsjuQHaBDh2A-6Y'
@@ -23,7 +23,7 @@ bot = telepot.Bot(TOKEN)
 def getData(loc_param, date_param, x, y):
     res_list = []
     api = "real_time_weather"
-    date, time = currentTime.nowDateTime()
+    date, time = Time.nowDateTime()
     url = apiService.makeUrl_real_time_weather(api, date, time, x, y)
     #url = baseurl+'&LAWD_CD='+loc_param+'&DEAL_YMD='+date_param
     #print(url)

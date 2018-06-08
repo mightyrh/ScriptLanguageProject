@@ -20,4 +20,9 @@ def nowDateTime():
 
     return nowDate, nowTime
 
-nowDateTime()
+def dateCalculate(base_time):
+    now = datetime.datetime.now()
+    if int(now.strftime('%H%M')) < int(base_time):
+        now -= datetime.timedelta(1)
+
+    return now.strftime('%Y%m%d')
