@@ -91,6 +91,7 @@ def ButtonAction():
     global RenderText
     address = InputLabel.get()
     data = map.SearchGeo(address)
+    mapdata = data['mapdata']
     #x, y, cityName, mapdata, mapimage = map.SearchGeo(address)
 
 
@@ -115,7 +116,7 @@ def ButtonAction():
         RenderText.insert(INSERT, data['time'])
         RenderText.insert(INSERT, "]")
         RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, data['mapdata']["results"][0]["formatted_address"])
+        RenderText.insert(INSERT, mapdata["results"][0]["formatted_address"])
         RenderText.insert(INSERT, "\n")
         RenderText.insert(INSERT, "온도 :")
         RenderText.insert(INSERT, data['temp'])
@@ -123,7 +124,7 @@ def ButtonAction():
         RenderText.insert(INSERT, data['humidity'])
 
         emailText = "날짜" + "[" + data['date'] + "\t" + data['time'] + "]" + "\n" + \
-                    data['mapdata']["results"][0]["formatted_address"] + "\n" + \
+                    mapdata["results"][0]["formatted_address"] + "\n" + \
                     "온도 :" + data['temp'] + ", 습도 :" + data['humidity']
         sendEmail(emailText)
 
