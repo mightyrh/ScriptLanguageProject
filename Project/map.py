@@ -2,7 +2,7 @@
 
 import json
 from urllib.request import urlopen
-from urllib.parse import quote
+from io import BytesIO
 from urllib.parse import urlencode, quote_plus
 from transcoord import *
 
@@ -21,11 +21,16 @@ def SerchGeo(serch):#위도,경도 반환
         responselocation = responseJson["results"][0]["geometry"]["location"]
         x, y = grid(responselocation["lat"], responselocation["lng"])   # 위경도를 격자좌표로 변환 후 반환
         # return responselocation["lat"], responselocation["lng"], x, y
-        return x, y , responseJson
+        return x, y , responseJson, mapimage(responselocation["lat"], responselocation["lng"])
 
     else:
         return "error","error" ,"error"
 
 
+def mapimage(lat, lng):
+    url = "https://maps.googleapis.com/maps/api/staticmap?center="+str(lat)+","+str(lng) +"&zoom=13&size=400x400&format=jpg&key=AIzaSyCWJAM-nuDT2BaF08b6VR9dQXn3um7puaA"
+    print(url)
+    with urlopen(url) as u:
+        raw_data = u.read()
 
-
+    return raw_data

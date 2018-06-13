@@ -1,11 +1,16 @@
 from tkinter import *
+
 from tkinter import font
 import map
 import apiService
 import tkinter.messagebox
+from io import BytesIO
+import urllib.request
+from PIL import Image, ImageTk
+
 
 g_Tk = Tk()
-g_Tk.geometry("400x600+750+200")
+g_Tk.geometry("850x600+750+200")
 DataList = []
 def InitTopText():
     TempFont = font.Font(g_Tk, size=20, weight='bold', family = 'Consolas')
@@ -73,16 +78,31 @@ def InitButton():
     button.pack()
     button.place(x=330,y=110)
 
+def InitMapLabel():
+    global mapLabel
+    mapLabel = Label(g_Tk,height=400,width=400,borderwidth=12,relief='ridge')
+    mapLabel.pack()
+    mapLabel.place(x=400,y=0)
+
 def ButtonAction():
     global InputLabel
     global RenderText
     address = InputLabel.get()
-    x,y,mapdata = map.SerchGeo(address)
-
+    x,y,mapdata,mapimage = map.SerchGeo(address)
 
 
     RenderText.configure(state='normal')
     RenderText.delete(0.0,END)
+
+    im = Image.open(BytesIO(mapimage))
+    image = ImageTk.PhotoImage(im)
+
+    global mapLabel
+    mapLabel = Label(g_Tk, image=image, height=400, width=400,borderwidth=12,relief='ridge')
+    mapLabel.image = image
+    mapLabel.pack()
+    mapLabel.place(x=400, y=0)
+
     if x != "error":
         data = apiService.getData_real_time_weather(x, y)
         RenderText.insert(INSERT,"날짜")
@@ -102,10 +122,11 @@ def ButtonAction():
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
 
-
     RenderText.configure(state='disabled')
 
+
 InitTopText()
+InitMapLabel()
 InitSearchListBox()
 InitInputLabel()
 InitButton()

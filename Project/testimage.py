@@ -1,6 +1,5 @@
 from tkinter import *
 from io import BytesIO
-import urllib
 import urllib.request
 from PIL import Image, ImageTk
 
@@ -8,7 +7,7 @@ root = Tk()
 root.geometry("500x500+500+200")
 
 # openapi로 이미지 url을 가져옴.
-url = "http://tong.visitkorea.or.kr/cms/resource/74/2396274_image2_1.JPG"
+url = "https://maps.googleapis.com/maps/api/staticmap?center=40.714728,-73.998672&zoom=13&size=400x400&key=AIzaSyCWJAM-nuDT2BaF08b6VR9dQXn3um7puaA"
 with urllib.request.urlopen(url) as u:
     raw_data = u.read()
 
