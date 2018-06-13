@@ -14,7 +14,8 @@ import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
-
+import matplotlib.pyplot as plt
+import numpy as np
 
 g_Tk = Tk()
 g_Tk.geometry("850x850+750+200")
@@ -131,7 +132,7 @@ def ButtonAction():
         emailText = "날짜" + "[" + data['date'] + "\t" + data['time'] + "]" + "\n" + \
                     mapdata["results"][0]["formatted_address"] + "\n" + \
                     "온도 :" + data['temp'] + ", 습도 :" + data['humidity']
-        sendEmail(emailText)
+        #sendEmail(emailText)
 
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
@@ -140,12 +141,16 @@ def ButtonAction():
 
     RenderText.configure(state='disabled')
 
-    f = Figure(figsize=(5, 4), dpi=100)
+
+
+    f=matplotlib.figure.Figure(figsize=(5,4),dpi=100)
     a = f.add_subplot(111)
-    a.plot([1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 3, 100, 9, 3, 5])
+    x_value = [1,2,3,4,5,6,7,8,9,10]
+    y_value = [1,2,3,4,5,6,7,8,9,10]
+
+    bar = a.bar(x_value,y_value,linewidth=1)
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
-    canvas.show()
     canvas.get_tk_widget().pack(side=tkinter.BOTTOM, fill=tkinter.X, expand=False)
 
 
