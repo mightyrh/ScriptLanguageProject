@@ -129,6 +129,8 @@ def ButtonAction():
         RenderText.insert(INSERT, ", 습도 :")
         RenderText.insert(INSERT, data['humidity'])
 
+        drawGraph()
+
         emailText = "날짜" + "[" + data['date'] + "\t" + data['time'] + "]" + "\n" + \
                     mapdata["results"][0]["formatted_address"] + "\n" + \
                     "온도 :" + data['temp'] + ", 습도 :" + data['humidity']
@@ -142,7 +144,7 @@ def ButtonAction():
     RenderText.configure(state='disabled')
 
 
-
+def drawGraph():
     f=matplotlib.figure.Figure(figsize=(5,4),dpi=100)
     a = f.add_subplot(111)
     x_value = [1, 3, 5, 7]
