@@ -8,6 +8,8 @@ from io import BytesIO
 import urllib.request
 from PIL import Image, ImageTk
 from gmail import*
+from telbot import*
+from multiprocessing import Process, Queue
 
 g_Tk = Tk()
 g_Tk.geometry("850x600+750+200")
@@ -129,12 +131,21 @@ def ButtonAction():
 
     RenderText.configure(state='disabled')
 
+if __name__ == '__main__':
 
-InitTopText()
-InitMapLabel()
-InitSearchListBox()
-InitInputLabel()
-InitButton()
-InitRenderText()
+    InitTopText()
+    InitMapLabel()
+    InitSearchListBox()
+    InitInputLabel()
+    InitButton()
+    InitRenderText()
 
-g_Tk.mainloop()
+    procs = []
+    proc = Process(target=botMessageLoop, args=())
+    procs.append(proc)
+    proc.start()
+
+    g_Tk.mainloop()
+
+    for proc in procs:
+        proc.join()
