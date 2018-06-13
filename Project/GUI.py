@@ -10,9 +10,14 @@ from PIL import Image, ImageTk
 from gmail import*
 from telbot import*
 from multiprocessing import Process, Queue
+import matplotlib
+matplotlib.use('TkAgg')
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
+
 
 g_Tk = Tk()
-g_Tk.geometry("850x600+750+200")
+g_Tk.geometry("850x850+750+200")
 DataList = []
 def InitTopText():
     TempFont = font.Font(g_Tk, size=20, weight='bold', family = 'Consolas')
@@ -67,7 +72,7 @@ def InitRenderText():
     RenderTextScrollbar.pack()
     RenderTextScrollbar.place(x=375,y=200)
 
-    RenderText = Text(g_Tk,width =49,height = 27,borderwidth=12,relief='ridge',yscrollcommand=RenderTextScrollbar.set)
+    RenderText = Text(g_Tk,width =49,height = 14,borderwidth=12,relief='ridge',yscrollcommand=RenderTextScrollbar.set)
     RenderText.pack()
     RenderText.place(x=10,y=215)
     RenderTextScrollbar.config(command=RenderText.yview)
@@ -82,7 +87,7 @@ def InitButton():
 
 def InitMapLabel():
     global mapLabel
-    mapLabel = Label(g_Tk,height=400,width=400,borderwidth=12,relief='ridge')
+    mapLabel = Label(g_Tk,height=26,width=56,borderwidth=12,relief='ridge')
     mapLabel.pack()
     mapLabel.place(x=400,y=0)
 
@@ -132,6 +137,17 @@ def ButtonAction():
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
 
     RenderText.configure(state='disabled')
+
+    RenderText.configure(state='disabled')
+
+    f = Figure(figsize=(5, 4), dpi=100)
+    a = f.add_subplot(111)
+    a.plot([1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 3, 8, 9, 3, 5])
+
+    canvas = FigureCanvasTkAgg(f, g_Tk)
+    canvas.show()
+    canvas.get_tk_widget().pack(side=tkinter.BOTTOM, fill=tkinter.X, expand=False)
+
 
 if __name__ == '__main__':
 
