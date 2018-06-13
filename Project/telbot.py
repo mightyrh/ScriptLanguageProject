@@ -16,8 +16,9 @@ def handle(msg):
 
     # message content type 이 text일때만
     if content_type == 'text':
-        if msg['text'] == '안녕':  # message 내용이 '안녕' 이면
-            bot.sendMessage(chat_id, '안녕하세요 !') # 안녕하세요 를 sendMessage 한다
+        if msg['text'] == '오늘날씨':  # message 내용이 '안녕' 이면
+            bot.sendMessage(chat_id, '지역 이름을 입력해주세요. (예, 원주시)') # 안녕하세요 를 sendMessage 한다
+
         elif msg['text'] == '뭐해':
             bot.sendMessage(chat_id, '아무것도')
         else:

@@ -3,12 +3,15 @@ from urllib.parse import urlencode, quote_plus
 from urllib.request import Request, urlopen
 from xml.dom.minidom import parseString
 from Time import*
+from map import*
 
 # date 는 전날로 입력 받아야 함. 전날 2000 부터 82개 받아오면 오늘 하루 치임
 # 1페이지는 오늘
 # 2페이지는 내일
-def makeUrl_weather_for_a_day(x, y, day):
+def makeUrl_weather_for_a_day(cityName, day):
     # base_time 0200 0500 0800 1100 1400 1700 2000 2300 각각 4시간 후를 예보함
+    x, y, null, null = SerchGeo(cityName)
+
     if day == 'today':
         pageNo = 1
     elif day == 'tomorrow':
@@ -24,7 +27,10 @@ def makeUrl_weather_for_a_day(x, y, day):
                                    quote_plus('pageNo'): pageNo, quote_plus('_type'): 'xml'})
     return url+queryParams
 
-def makeUrl_real_time_weather(date, time, x, y):
+def makeUrl_real_time_weather(cityName):
+    x, y, null, null = SerchGeo(cityName)
+    date, time = nowDateTime()
+
     url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastGrib'
     ServiceKey = 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'
     queryParams = '?' + 'serviceKey=' + ServiceKey + '&' + urlencode(
@@ -71,15 +77,15 @@ def makeUrl_air_quality_forecast(category): # 시, 도를 입력하면 첫번째 원소가 실
     return url + queryParams
 
 ########################################################################
-def getApi_weather_for_a_day(x, y, day):
-    url = makeUrl_weather_for_a_day(x, y, day)
+def getApi_weather_for_a_day(cityName, day):
+    url = makeUrl_weather_for_a_day(cityName, day)
     print(url)
     request = Request(url)
     response_body = urlopen(request).read()
     return extractData_weather_for_a_day(response_body)
 
-def getApi_real_time_weather(date, time, x, y):
-    url = makeUrl_real_time_weather(date, time, x, y)
+def getApi_real_time_weather(cityName):
+    url = makeUrl_real_time_weather(cityName)
     print (url)
     request = Request(url)
     response_body = urlopen(request).read()
@@ -229,12 +235,6 @@ def extractData_air_quality_forecast(strXml, location):
 
     return PM10_Level, air_quality
 
-def getData_real_time_weather(x, y):
-    date, time = nowDateTime()
-
-    data = getApi_real_time_weather(date, time, x, y)
-    return data
-
 def returnDayCat():
     return {'0600':returnCat(), '0900':returnCat(),
             '1200':returnCat(), '1500':returnCat(),
@@ -314,8 +314,8 @@ def getCityName_In_English(cityName):
 
     return cityName_In_Korean
 
-print(getApi_weather_for_a_day("60", "127", "today"))
-print(getData_real_time_weather("60", "127"))
-print(getApi_medium_term_forecast('서울'))
-print(getApi_medium_term_temperature('서울'))
-print(getApi_air_quality_forecast('서울'))
+#print(getApi_weather_for_a_day('서울', "today"))
+#print(getApi_real_time_weather('서울'))
+#print(getApi_medium_term_forecast('서울'))
+#print(getApi_medium_term_temperature('서울'))
+#print(getApi_air_quality_forecast('서울'))

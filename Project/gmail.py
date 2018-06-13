@@ -6,10 +6,9 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 import apiService
 
-host = "smtp.gmail.com" # Gmail SMTP 서버 주소
-port = "587"
-
 def sendEmail(text):
+    host = "smtp.gmail.com"  # Gmail SMTP 서버 주소
+    port = "587"
 
     #htmlFileName = "logo.html"
 
