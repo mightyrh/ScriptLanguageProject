@@ -19,7 +19,7 @@ def makeUrl_weather_for_a_day(cityName, day):
     elif day == 'tomorrow':
         pageNo = 2
 
-    base_date = dateCalculate('0200')
+    base_date = dateCalculate('0200').strftime('%Y%m%d')
 
     url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData'
     ServiceKey = 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'

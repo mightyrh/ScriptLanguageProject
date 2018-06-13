@@ -25,4 +25,4 @@ def dateCalculate(base_time):
     if int(now.strftime('%H%M')) < int(base_time):
         now -= datetime.timedelta(1)
 
-    return now.strftime('%Y%m%d')
+    return now

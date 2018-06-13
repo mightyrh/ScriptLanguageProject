@@ -142,7 +142,7 @@ def ButtonAction():
 
     f = Figure(figsize=(5, 4), dpi=100)
     a = f.add_subplot(111)
-    a.plot([1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 3, 8, 9, 3, 5])
+    a.plot([1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 3, 100, 9, 3, 5])
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
     canvas.show()
