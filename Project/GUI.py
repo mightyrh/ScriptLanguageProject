@@ -7,7 +7,7 @@ import tkinter.messagebox
 from io import BytesIO
 import urllib.request
 from PIL import Image, ImageTk
-
+from gmail import*
 
 g_Tk = Tk()
 g_Tk.geometry("850x600+750+200")
@@ -118,6 +118,11 @@ def ButtonAction():
         RenderText.insert(INSERT, data['temp'])
         RenderText.insert(INSERT, ", 습도 :")
         RenderText.insert(INSERT, data['humidity'])
+
+        emailText = "날짜" + "[" + data['date'] + "\t" + data['time'] + "]" + "\n" + mapdata["results"][0][
+            "formatted_address"] + "\n" \
+                    + "온도 :" + data['temp'] + ", 습도 :" + data['humidity']
+        sendEmail(emailText)
 
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
