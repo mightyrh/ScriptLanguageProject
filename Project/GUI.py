@@ -145,10 +145,14 @@ def ButtonAction():
 
     f=matplotlib.figure.Figure(figsize=(5,4),dpi=100)
     a = f.add_subplot(111)
-    x_value = [1,2,3,4,5,6,7,8,9,10]
-    y_value = [1,2,3,4,5,6,7,8,9,10]
+    x_value = [1, 3, 5, 7]
+    y_value = [3, 9, 15, 21]
+    x2_value = [2, 4, 6, 8]
+    y2_value = [3, 9, 15, 21]
 
-    bar = a.bar(x_value,y_value,linewidth=1)
+    bar = a.bar(x_value,y_value,linewidth=0.5,label='tem',color='r')
+    bar2 = a.bar(x2_value,y2_value,linewidth=0.5,label='hum',color='b')
+    f.legend()
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
     canvas.get_tk_widget().pack(side=tkinter.BOTTOM, fill=tkinter.X, expand=False)
