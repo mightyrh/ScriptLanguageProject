@@ -90,13 +90,14 @@ def ButtonAction():
     global InputLabel
     global RenderText
     address = InputLabel.get()
-    x,y,mapdata,mapimage = map.SerchGeo(address)
+    data = map.SearchGeo(address)
+    #x, y, cityName, mapdata, mapimage = map.SearchGeo(address)
 
 
     RenderText.configure(state='normal')
     RenderText.delete(0.0,END)
 
-    im = Image.open(BytesIO(mapimage))
+    im = Image.open(BytesIO(data['mapimage']))
     image = ImageTk.PhotoImage(im)
 
     global mapLabel
@@ -105,8 +106,8 @@ def ButtonAction():
     mapLabel.pack()
     mapLabel.place(x=400, y=0)
 
-    if x != "error":
-        data = apiService.getData_real_time_weather(x, y)
+    if data['x'] != "error":
+        data = apiService.getApi_real_time_weather(data['cityName'])
         RenderText.insert(INSERT,"날짜")
         RenderText.insert(INSERT, "[")
         RenderText.insert(INSERT, data['date'])
@@ -114,16 +115,16 @@ def ButtonAction():
         RenderText.insert(INSERT, data['time'])
         RenderText.insert(INSERT, "]")
         RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, mapdata["results"][0]["formatted_address"])
+        RenderText.insert(INSERT, data['mapdata']["results"][0]["formatted_address"])
         RenderText.insert(INSERT, "\n")
         RenderText.insert(INSERT, "온도 :")
         RenderText.insert(INSERT, data['temp'])
         RenderText.insert(INSERT, ", 습도 :")
         RenderText.insert(INSERT, data['humidity'])
 
-        emailText = "날짜" + "[" + data['date'] + "\t" + data['time'] + "]" + "\n" + mapdata["results"][0][
-            "formatted_address"] + "\n" \
-                    + "온도 :" + data['temp'] + ", 습도 :" + data['humidity']
+        emailText = "날짜" + "[" + data['date'] + "\t" + data['time'] + "]" + "\n" + \
+                    data['mapdata']["results"][0]["formatted_address"] + "\n" + \
+                    "온도 :" + data['temp'] + ", 습도 :" + data['humidity']
         sendEmail(emailText)
 
     else:

@@ -1,5 +1,5 @@
-# coding: utf8
-
+## coding: utf8
+#-*- coding: utf-8 -*-
 import json
 from urllib.request import urlopen
 from io import BytesIO
@@ -9,9 +9,9 @@ from transcoord import *
 url = 'https://maps.googleapis.com/maps/api/geocode/json?'
 key = '&key=AIzaSyDj8yeT04xh5Rox_2Bz3jQdy2QcBmMSMlI'
 
-def SerchGeo(serch):#위도,경도 반환
+def SearchGeo(search):#위도,경도 반환
 
-    apiURL = url+urlencode({quote_plus('address'):serch})+key
+    apiURL = url+urlencode({quote_plus('address'):search}) +'&language=ko' + key
     print(apiURL)
     response = urlopen(apiURL).read()
     responseJson =json.loads(response)
@@ -21,7 +21,9 @@ def SerchGeo(serch):#위도,경도 반환
         responselocation = responseJson["results"][0]["geometry"]["location"]
         x, y = grid(responselocation["lat"], responselocation["lng"])   # 위경도를 격자좌표로 변환 후 반환
         # return responselocation["lat"], responselocation["lng"], x, y
-        return x, y , responseJson, mapimage(responselocation["lat"], responselocation["lng"])
+        cityName = responseJson["results"][0]["address_components"][0]["long_name"]
+        return {"x": x, "y": y, "cityName": cityName, "mamdata": responseJson,
+                "mapimage": mapimage(responselocation["lat"], responselocation["lng"])}
 
     else:
         return "error","error" ,"error"

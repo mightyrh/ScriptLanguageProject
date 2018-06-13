@@ -10,7 +10,9 @@ from map import*
 # 2페이지는 내일
 def makeUrl_weather_for_a_day(cityName, day):
     # base_time 0200 0500 0800 1100 1400 1700 2000 2300 각각 4시간 후를 예보함
-    x, y, null, null = SerchGeo(cityName)
+    mapdata = SearchGeo(cityName)
+    x = mapdata['x']
+    y = mapdata['y']
 
     if day == 'today':
         pageNo = 1
@@ -28,7 +30,9 @@ def makeUrl_weather_for_a_day(cityName, day):
     return url+queryParams
 
 def makeUrl_real_time_weather(cityName):
-    x, y, null, null = SerchGeo(cityName)
+    mapdata = SearchGeo(cityName)
+    x = mapdata['x']
+    y = mapdata['y']
     date, time = nowDateTime()
 
     url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastGrib'
@@ -316,6 +320,7 @@ def getCityName_In_English(cityName):
 
 #print(getApi_weather_for_a_day('서울', "today"))
 #print(getApi_real_time_weather('서울'))
+#print(getData_real_time_weather("60", "127"))
 #print(getApi_medium_term_forecast('서울'))
 #print(getApi_medium_term_temperature('서울'))
 #print(getApi_air_quality_forecast('서울'))
