@@ -145,10 +145,11 @@ def ButtonAction():
 
     RenderText.configure(state='disabled')
 
-    RenderText.configure(state='disabled')
 
 
-def drawGraph():
+def InitGraph():
+    global canvas
+
     f=matplotlib.figure.Figure(figsize=(5,4),dpi=100)
     a = f.add_subplot(111)
     x_value = [1, 3, 5, 7]
@@ -156,8 +157,14 @@ def drawGraph():
     x2_value = [2, 4, 6, 8]
     y2_value = [3, 9, 15, 21]
 
-    bar = a.bar(x_value,y_value,linewidth=0.5,label='tem',color='r')
-    bar2 = a.bar(x2_value,y2_value,linewidth=0.5,label='hum',color='b')
+    axis = a.plot()
+    bar = a.bar(x_value, y_value, linewidth=0.5, label='tem', color='r')
+    a.set_xlabel('Time',color='g')
+    a.set_ylabel('Tem',color='r')
+
+    a2 = a.twinx()
+    bar2 = a2.bar(x2_value, y2_value, linewidth=0.5, label='hum', color='b')
+    a2.set_ylabel('Hum', color='b')
     f.legend()
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
@@ -168,6 +175,35 @@ def drawGraph():
     #label.place(x=0, y=0)
 
 
+def drawGraph():
+    global canvas
+    canvas.get_tk_widget().pack_forget()
+
+    f = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
+    a = f.add_subplot(111)
+    x_value = [1, 3, 5, 7]
+    y_value = [3, 9, 15, 21]
+    x2_value = [2, 4, 6, 8]
+    y2_value = [100, 1000, 100000, 80000]
+
+    axis = a.plot()
+    bar = a.bar(x_value, y_value, linewidth=0.5, label='tem', color='r')
+    a.set_xlabel('Time', color='g')
+    a.set_ylabel('Tem', color='r')
+
+    a2 = a.twinx()
+    bar2 = a2.bar(x2_value, y2_value, linewidth=0.5, label='hum', color='b')
+    a2.set_ylabel('Hum', color='b')
+    f.legend()
+
+
+    canvas = FigureCanvasTkAgg(f, g_Tk)
+    canvas.get_tk_widget().pack(side=tkinter.BOTTOM, fill=tkinter.X, expand=False)
+
+    # label = Label(root, image=image, height=400, width=400)
+    # label.pack()
+    # label.place(x=0, y=0)
+
 if __name__ == '__main__':
 
     InitTopText()
@@ -176,6 +212,7 @@ if __name__ == '__main__':
     InitInputLabel()
     InitButton()
     InitRenderText()
+    InitGraph()
 
     procs = []
     proc = Process(target=botMessageLoop, args=())
