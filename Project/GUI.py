@@ -11,11 +11,17 @@ from gmail import*
 from telbot import*
 from multiprocessing import Process, Queue
 import matplotlib
-matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import numpy as np
+
+weather_icons = Image.open('weather_icons.png')
+sunny = Image.open('sunny.png')
+sunny.save
+
+matplotlib.use('TkAgg')
+
 
 g_Tk = Tk()
 g_Tk.geometry("850x850+750+200")
