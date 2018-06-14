@@ -22,8 +22,8 @@ def SearchGeo(search):#위도,경도 반환
         x, y = grid(responselocation["lat"], responselocation["lng"])   # 위경도를 격자좌표로 변환 후 반환
         # return responselocation["lat"], responselocation["lng"], x, y
         cityName = responseJson["results"][0]["address_components"][0]["long_name"]
-        return {"x": x, "y": y, "cityName": cityName, "mapdata": responseJson,
-                "mapimage": mapimage(responselocation["lat"], responselocation["lng"])}
+        return {"x": x, "y": y, "cityName": cityName, "mapdata": responseJson}
+                #"mapimage": mapimage(responselocation["lat"], responselocation["lng"])}
 
     else:
         return "error","error" ,"error"

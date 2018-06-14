@@ -3,10 +3,6 @@ from map import*
 def weather_for_today(cityName):
     targetTime = ['0600', '0900', '1200', '1500', '1800', '2100', '0000', '0300']
     data =  getApi_weather_for_a_day(cityName, "today")
-    base_date = dateCalculate('0200')
-    year = base_date.strftime("%Y")
-    month = base_date.strftime("%m")
-    day = base_date.strftime("%d")
 
     PTY = ""
     SKY = ""
@@ -14,7 +10,7 @@ def weather_for_today(cityName):
     TMX = 0
 
     forecastList = []
-    forecastList.append("날짜: " + year + "년 " + month + "월 " + day + "일" + "\n")
+#    forecastList.append("날짜: " + year + "년 " + month + "월 " + day + "일" + "\n")
 
     for time in targetTime:
         if data[time]['PTY'] == '0':

@@ -25,6 +25,11 @@ def handle(msg):
             bot.sendMessage(chat_id, '지역 이름을 입력해주세요. (예, 원주시)') # 안녕하세요 를 sendMessage 한다
         elif citySelected == True and forecastType == "오늘날씨":
             city = msg['text']
+            base_date = dateCalculate('0200')
+            year = base_date.strftime("%Y")
+            month = base_date.strftime("%m")
+            day = base_date.strftime("%d")
+            bot.sendMessage(chat_id, "날짜: " + year + "년 " + month + "월 " + day + "일" + "\n")
             bot.sendMessage(chat_id, weather_for_today(city))
             citySelected = False
         else:

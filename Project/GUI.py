@@ -17,18 +17,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 day_clear = Image.open('day_clear.png')
-day_cloud_little = Image.open('day_cloud_little')
-day_cloud_alot = Image.open('day_cloud_alot')
-day_rain = Image.open('day_rain')
-day_rain_snow = Image.open('day_rain_snow')
-day_snow = Image.open('day_snow')
+day_cloud_little = Image.open('day_cloud_little.png')
+day_cloud_alot = Image.open('day_cloud_alot.png')
+day_rain = Image.open('day_rain.png')
+day_rain_snow = Image.open('day_rain_snow.png')
+day_snow = Image.open('day_snow.png')
 
 night_clear = Image.open('night_clear.png')
-night_cloud_little = Image.open('night_cloud_little')
-night_cloud_alot = Image.open('night_cloud_alot')
-night_rain = Image.open('night_rain')
-night_rain_snow = Image.open('night_rain_snow')
-night_snow = Image.open('night_snow')
+night_cloud_little = Image.open('night_cloud_little.png')
+night_cloud_alot = Image.open('night_cloud_alot.png')
+night_rain = Image.open('night_rain.png')
+night_rain_snow = Image.open('night_rain_snow.png')
+night_snow = Image.open('night_snow.png')
 
 matplotlib.use('TkAgg')
 
@@ -51,23 +51,8 @@ def InitSearchListBox():
     TempFont = font.Font(g_Tk, size=15, weight='bold', family='Consolas')
     SearchListBox = Listbox(g_Tk, font=TempFont, activestyle='none',width=10, height=1, borderwidth=12, relief='ridge',yscrollcommand=ListBoxScrollbar.set)
 
-    SearchListBox.insert(1, "서울")
-    SearchListBox.insert(2, "부산")
-    SearchListBox.insert(3, "대구")
-    SearchListBox.insert(4, "인천")
-    SearchListBox.insert(5, "광주")
-    SearchListBox.insert(6, "대전")
-    SearchListBox.insert(7, "울산")
-    SearchListBox.insert(8, "경기")
-    SearchListBox.insert(9, "강원")
-    SearchListBox.insert(10, "충북")
-    SearchListBox.insert(11, "충남")
-    SearchListBox.insert(12, "전북")
-    SearchListBox.insert(13, "전남")
-    SearchListBox.insert(14, "경북")
-    SearchListBox.insert(15, "경남")
-    SearchListBox.insert(16, "제주")
-    SearchListBox.insert(17, "세종")
+    SearchListBox.insert(1, "오늘날씨")
+    SearchListBox.insert(2, "10일간 날씨")
     SearchListBox.pack()
     SearchListBox.place(x=10, y=50)
     ListBoxScrollbar.config(command=SearchListBox.yview)
@@ -112,15 +97,15 @@ def ButtonAction():
     global InputLabel
     global RenderText
     address = InputLabel.get()
-    data = map.SearchGeo(address)
-    mapdata = data['mapdata']
-    #x, y, cityName, mapdata, mapimage = map.SearchGeo(address)
-
+    GeoData = map.SearchGeo(address)
+    mapdata = GeoData['mapdata']
+    lat = mapdata['results'][0]['geometry']['location']['lat']
+    lng = mapdata['results'][0]['geometry']['location']['lng']
 
     RenderText.configure(state='normal')
     RenderText.delete(0.0,END)
 
-    im = Image.open(BytesIO(data['mapimage']))
+    im = Image.open(BytesIO(map.mapimage(lat,lng)))
     image = ImageTk.PhotoImage(im)
 
     global mapLabel
@@ -129,27 +114,30 @@ def ButtonAction():
     mapLabel.pack()
     mapLabel.place(x=400, y=0)
 
-    if data['x'] != "error":
-        data = apiService.getApi_real_time_weather(data['cityName'])
+    if GeoData['x'] != "error":
+        currentTempHumidity = apiService.getApi_real_time_weather(GeoData['cityName'])
+        weatherForToday = weather_for_today(GeoData['cityName'])
         RenderText.insert(INSERT,"날짜")
         RenderText.insert(INSERT, "[")
-        RenderText.insert(INSERT, data['date'])
+        RenderText.insert(INSERT, currentTempHumidity['date'])
         RenderText.insert(INSERT, "\t")
-        RenderText.insert(INSERT, data['time'])
+        RenderText.insert(INSERT, currentTempHumidity['time'])
         RenderText.insert(INSERT, "]")
         RenderText.insert(INSERT, "\n")
         RenderText.insert(INSERT, mapdata["results"][0]["formatted_address"])
         RenderText.insert(INSERT, "\n")
-        RenderText.insert(INSERT, "온도 :")
-        RenderText.insert(INSERT, data['temp'])
-        RenderText.insert(INSERT, ", 습도 :")
-        RenderText.insert(INSERT, data['humidity'])
+        RenderText.insert(INSERT, "현재온도 :")
+        RenderText.insert(INSERT, currentTempHumidity['temp'])
+        RenderText.insert(INSERT, ", 현재습도 :")
+        RenderText.insert(INSERT, currentTempHumidity['humidity'])
+        RenderText.insert(INSERT, "\n\n")
+        RenderText.insert(INSERT, weatherForToday)
 
         drawGraph()
 
-        emailText = "날짜" + "[" + data['date'] + "\t" + data['time'] + "]" + "\n" + \
+        emailText = "날짜" + "[" + currentTempHumidity['date'] + "\t" + currentTempHumidity['time'] + "]" + "\n" + \
                     mapdata["results"][0]["formatted_address"] + "\n" + \
-                    "온도 :" + data['temp'] + ", 습도 :" + data['humidity']
+                    "온도 :" + currentTempHumidity['temp'] + ", 습도 :" + currentTempHumidity['humidity']
         #sendEmail(emailText)
 
     else:
