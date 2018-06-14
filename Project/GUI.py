@@ -16,9 +16,19 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import numpy as np
 
-weather_icons = Image.open('weather_icons.png')
-sunny = Image.open('sunny.png')
-sunny.save
+day_clear = Image.open('day_clear.png')
+day_cloud_little = Image.open('day_cloud_little')
+day_cloud_alot = Image.open('day_cloud_alot')
+day_rain = Image.open('day_rain')
+day_rain_snow = Image.open('day_rain_snow')
+day_snow = Image.open('day_snow')
+
+night_clear = Image.open('night_clear.png')
+night_cloud_little = Image.open('night_cloud_little')
+night_cloud_alot = Image.open('night_cloud_alot')
+night_rain = Image.open('night_rain')
+night_rain_snow = Image.open('night_rain_snow')
+night_snow = Image.open('night_snow')
 
 matplotlib.use('TkAgg')
 
@@ -164,6 +174,10 @@ def drawGraph():
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
     canvas.get_tk_widget().pack(side=tkinter.BOTTOM, fill=tkinter.X, expand=False)
+
+    #label = Label(root, image=image, height=400, width=400)
+    #label.pack()
+    #label.place(x=0, y=0)
 
 
 if __name__ == '__main__':
