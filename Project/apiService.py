@@ -8,11 +8,8 @@ from map import*
 # date 는 전날로 입력 받아야 함. 전날 2000 부터 82개 받아오면 오늘 하루 치임
 # 1페이지는 오늘
 # 2페이지는 내일
-def makeUrl_weather_for_a_day(cityName, day):
+def makeUrl_weather_for_a_day(x, y, day):
     # base_time 0200 0500 0800 1100 1400 1700 2000 2300 각각 4시간 후를 예보함
-    mapdata = SearchGeo(cityName)
-    x = mapdata['x']
-    y = mapdata['y']
 
     if day == 'today':
         pageNo = 1
@@ -29,10 +26,7 @@ def makeUrl_weather_for_a_day(cityName, day):
                                    quote_plus('pageNo'): pageNo, quote_plus('_type'): 'xml'})
     return url+queryParams
 
-def makeUrl_real_time_weather(cityName):
-    mapdata = SearchGeo(cityName)
-    x = mapdata['x']
-    y = mapdata['y']
+def makeUrl_real_time_weather(x, y):
     date, time = nowDateTime()
 
     url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastGrib'
@@ -81,15 +75,15 @@ def makeUrl_air_quality_forecast(category): # 시, 도를 입력하면 첫번째 원소가 실
     return url + queryParams
 
 ########################################################################
-def getApi_weather_for_a_day(cityName, day):
-    url = makeUrl_weather_for_a_day(cityName, day)
+def getApi_weather_for_a_day(x, y, day):
+    url = makeUrl_weather_for_a_day(x, y, day)
     print(url)
     request = Request(url)
     response_body = urlopen(request).read()
     return extractData_weather_for_a_day(response_body)
 
-def getApi_real_time_weather(cityName):
-    url = makeUrl_real_time_weather(cityName)
+def getApi_real_time_weather(x, y):
+    url = makeUrl_real_time_weather(x, y)
     print (url)
     request = Request(url)
     response_body = urlopen(request).read()
@@ -298,23 +292,23 @@ def getLocationCode_SKY(cityName):
     return locationCode
 
 def getCityName_In_English(cityName):
-    if cityName == '서울':cityName_In_Korean = 'seoul'
-    elif cityName == '부산':cityName_In_Korean = 'busan'
-    elif cityName == '대구':cityName_In_Korean = 'daegu'
-    elif cityName == '인천':cityName_In_Korean = 'incheon'
-    elif cityName == '광주':cityName_In_Korean = 'gwangju'
-    elif cityName == '대구':cityName_In_Korean = 'daegu'
-    elif cityName == '울산':cityName_In_Korean = 'ulsan'
-    elif cityName == '경기':cityName_In_Korean = 'gyeonggi'
-    elif cityName == '강원':cityName_In_Korean = 'gangwon'
-    elif cityName == '충북':cityName_In_Korean = 'chungbuk'
-    elif cityName == '충남':cityName_In_Korean = 'chungnam'
-    elif cityName == '전북':cityName_In_Korean = 'jeonbuk'
-    elif cityName == '전남':cityName_In_Korean = 'jeonnam'
-    elif cityName == '경북':cityName_In_Korean = 'gyeongbuk'
-    elif cityName == '경남':cityName_In_Korean = 'gyeongnam'
-    elif cityName == '제주':cityName_In_Korean = 'jeju'
-    elif cityName == '세종':cityName_In_Korean = 'sejong'
+    if cityName == '서울특별시':cityName_In_Korean = 'seoul'
+    elif cityName == '부산광역시':cityName_In_Korean = 'busan'
+    elif cityName == '대구광역시':cityName_In_Korean = 'daegu'
+    elif cityName == '인천광역시':cityName_In_Korean = 'incheon'
+    elif cityName == '광주광역시':cityName_In_Korean = 'gwangju'
+    elif cityName == '대구광역시':cityName_In_Korean = 'daegu'
+    elif cityName == '울산광역시':cityName_In_Korean = 'ulsan'
+    elif cityName == '경기도':cityName_In_Korean = 'gyeonggi'
+    elif cityName == '강원도':cityName_In_Korean = 'gangwon'
+    elif cityName == '충청북도':cityName_In_Korean = 'chungbuk'
+    elif cityName == '충청남도':cityName_In_Korean = 'chungnam'
+    elif cityName == '전라북도':cityName_In_Korean = 'jeonbuk'
+    elif cityName == '전라남도':cityName_In_Korean = 'jeonnam'
+    elif cityName == '경상북도':cityName_In_Korean = 'gyeongbuk'
+    elif cityName == '경상남도':cityName_In_Korean = 'gyeongnam'
+    elif cityName == '제주도':cityName_In_Korean = 'jeju'
+    #elif cityName == '세종':cityName_In_Korean = 'sejong'
 
     return cityName_In_Korean
 

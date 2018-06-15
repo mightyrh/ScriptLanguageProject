@@ -1,8 +1,8 @@
 from apiService import*
 from map import*
-def weather_for_today(cityName):
+def weather_for_today(x, y):
     targetTime = ['0600', '0900', '1200', '1500', '1800', '2100', '0000', '0300']
-    data =  getApi_weather_for_a_day(cityName, "today")
+    data =  getApi_weather_for_a_day(x, y, "today")
 
     PTY = ""
     SKY = ""
