@@ -2,10 +2,7 @@ from tkinter import *
 
 from tkinter import font
 import map
-import apiService
 import tkinter.messagebox
-from io import BytesIO
-import urllib.request
 from PIL import Image, ImageTk
 from gmail import*
 from telbot import*
@@ -13,8 +10,6 @@ from multiprocessing import Process, Queue
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
-import numpy as np
 
 day_clear = Image.open('day_clear.png')
 day_cloud_little = Image.open('day_cloud_little.png')
@@ -32,10 +27,23 @@ night_snow = Image.open('night_snow.png')
 
 matplotlib.use('TkAgg')
 
-
 g_Tk = Tk()
-g_Tk.geometry("850x850+750+200")
+g_Tk.geometry("850x900+750+200")
+g_Tk.title("오늘의 날씨는?")
+
 DataList = []
+def InitBack():
+    global BackGroundImage
+    global BackGround
+
+    BackGroundImage = Image.open('BackGround.png')
+    BackGroundImage = ImageTk.PhotoImage(BackGroundImage)
+
+    BackGround = Canvas(g_Tk, height=900, width=850)
+    BackGround.create_image(425, 300, image=BackGroundImage)
+    BackGround.pack()
+    BackGround.place(x=0, y=0)
+
 def InitTopText():
     TempFont = font.Font(g_Tk, size=20, weight='bold', family = 'Consolas')
     MainText = Label(g_Tk, font = TempFont, text="[오늘의 날씨는?]")
@@ -59,7 +67,7 @@ def InitSearchListBox():
 
 def InitInputLabel():
     global InputLabel
-    TempFont = font.Font(g_Tk, size=15, weight='bold', family = 'Consolas')
+    TempFont = font.Font(g_Tk, size=10, weight='bold', family = 'Consolas')
     InputLabel = Entry(g_Tk, font = TempFont, width = 26, borderwidth = 12, relief = 'ridge')
     InputLabel.pack()
     InputLabel.place(x=10, y=105)
@@ -82,10 +90,17 @@ def InitRenderText():
 
     RenderText.configure(state='disabled')
 
+
+
 def InitButton():
     button = Button(g_Tk,text="검색",command=ButtonAction)
     button.pack()
-    button.place(x=330,y=110)
+    button.place(x=280,y=110)
+
+def InitSendButton():
+    button = Button(g_Tk, text="이메일", command=ButtonSend)
+    button.pack()
+    button.place(x=330, y=110)
 
 def InitMapLabel():
     global mapLabel
@@ -93,9 +108,14 @@ def InitMapLabel():
     mapLabel.pack()
     mapLabel.place(x=400,y=0)
 
+
 def ButtonAction():
     global InputLabel
     global RenderText
+
+    global currentTempHumidity
+    global mapdata
+
     address = InputLabel.get()
     GeoData = map.SearchGeo(address)
     mapdata = GeoData['mapdata']
@@ -113,6 +133,8 @@ def ButtonAction():
     mapLabel.image = image
     mapLabel.pack()
     mapLabel.place(x=400, y=0)
+
+    showWeatherIcon()
 
     if GeoData['x'] != "error":
         currentTempHumidity = getApi_real_time_weather(GeoData['x'], GeoData['y'])
@@ -139,10 +161,6 @@ def ButtonAction():
 
         drawGraph()
 
-        emailText = "날짜" + "[" + currentTempHumidity['date'] + "\t" + currentTempHumidity['time'] + "]" + "\n" + \
-                    mapdata["results"][0]["formatted_address"] + "\n" + \
-                    "온도 :" + currentTempHumidity['temp'] + ", 습도 :" + currentTempHumidity['humidity']
-        #sendEmail(emailText)
 
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
@@ -150,6 +168,22 @@ def ButtonAction():
     RenderText.configure(state='disabled')
 
 
+def ButtonSend():
+
+    emailText = "날짜" + "[" + currentTempHumidity['date'] + "\t" + currentTempHumidity['time'] + "]" + "\n" + \
+                mapdata["results"][0]["formatted_address"] + "\n" + \
+                "온도 :" + currentTempHumidity['temp'] + ", 습도 :" + currentTempHumidity['humidity']
+    sendEmail(emailText)
+
+def showWeatherIcon():
+
+    BackGround.configure(state='normal')
+    day_clear = Image.open('day_clear.png')
+    day_clear = ImageTk.PhotoImage(day_clear)
+    BackGround.create_image(190, 460, image=day_clear)
+    BackGround.pack()
+    BackGround.place(x=100, y=200)
+    BackGround.configure(state='disable')
 
 def InitGraph():
     global canvas
@@ -172,6 +206,8 @@ def InitGraph():
     f.legend()
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
+    toolbar = NavigationToolbar2TkAgg(canvas, g_Tk)
+    toolbar.update()
     canvas.get_tk_widget().pack(side=tkinter.BOTTOM, fill=tkinter.X, expand=False)
 
     #label = Label(root, image=image, height=400, width=400)
@@ -208,15 +244,18 @@ def drawGraph():
     # label.pack()
     # label.place(x=0, y=0)
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
+    InitBack()
     InitTopText()
     InitMapLabel()
     InitSearchListBox()
     InitInputLabel()
     InitButton()
+    InitSendButton()
     InitRenderText()
     InitGraph()
+
 
     procs = []
     proc = Process(target=botMessageLoop, args=())
