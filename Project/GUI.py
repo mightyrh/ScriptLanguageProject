@@ -29,20 +29,8 @@ night_snow = Image.open('night_snow.png')
 matplotlib.use('TkAgg')
 
 g_Tk = Tk()
-g_Tk.geometry("850x900+750+200")
+g_Tk.geometry("850x850+750+200")
 g_Tk.title("오늘의 날씨는?")
-
-global temp_ylist
-global hum_ylist
-temp_ylist =[]
-hum_ylist =[]
-
-for i in range(-30,40,2):
-    temp_ylist.append(i)
-
-for i in range(0,100,2):
-    hum_ylist.append(i)
-
 
 DataList = []
 def InitBack():
@@ -335,8 +323,8 @@ def InitGraph():
     global toolbar
     f=matplotlib.figure.Figure(figsize=(5,3),dpi=100)
     a = f.add_subplot(111)
-    x_value = [1, 2, 3, 4]
-    y_value = [15, 1, 21, 45]
+    x_value = [0, 0, 0, 0]
+    y_value = [0, 0, 0, 0]
     x2_value = [0, 0, 0, 0]
     y2_value = [0, 0, 0, 0]
 
@@ -383,15 +371,16 @@ def drawGraph(temps, humidities):
 
 
     axis = a.plot(x_value, y_value, color='r')
-
+    a.grid(True)
     a.set_xlabel('Time', color='g')
     a.set_ylabel('Tem', color='r')
     a.set_ylim([-10,40])
 
 
     a2 = a.twinx()
-    bar2 = a2.bar(x_value, y2_value, linewidth=0.1, label='hum', color='b')
+    bar2 = a2.bar(x_value, y2_value, width=0.3, label='hum', color='b')
     a2.set_ylabel('Hum', color='b')
+    a2.set_ylim(0,300)
     #f.legend()
 
 
