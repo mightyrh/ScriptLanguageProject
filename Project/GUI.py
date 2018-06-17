@@ -121,14 +121,23 @@ def ButtonAction():
     global mapdata
     global GeoData
 
+    temps = []
+    humidities = []
     Option = str(int(float(SearchOption.yview()[1])*2))
     print(SearchOption.get(Option+".0"))
 
     address = InputLabel.get()
     GeoData = map.SearchGeo(address)
     mapdata = GeoData['mapdata']
+    todayData = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], "today")
     lat = mapdata['results'][0]['geometry']['location']['lat']
     lng = mapdata['results'][0]['geometry']['location']['lng']
+
+    for data in GeoData['mapdata']['results'][0]['address_components']:
+        if 'locality' in data['types']:
+            cityName = data['long_name']
+        elif 'administrative_area_level_1' in data['types']:
+            location = data['long_name']
 
     RenderText.configure(state='normal')
     RenderText.delete(0.0,END)
@@ -146,8 +155,8 @@ def ButtonAction():
 
     if Option == '1' and GeoData['x'] != "error":
         currentTempHumidity = getApi_real_time_weather(GeoData['x'], GeoData['y'])
-        weatherForToday = weather_for_today(GeoData['x'], GeoData['y'])
-        PM10_level, air_quality = getApi_air_quality_forecast(mapdata['results'][0]['address_components'][1]['long_name'])
+        weatherForToday = weather_for_today(todayData)
+        PM10_level, air_quality = getApi_air_quality_forecast(location)
         RenderText.insert(INSERT,"날짜")
         RenderText.insert(INSERT, "[")
         RenderText.insert(INSERT, currentTempHumidity['date'])
@@ -167,11 +176,15 @@ def ButtonAction():
         RenderText.insert(INSERT, "\n\n")
         RenderText.insert(INSERT, weatherForToday)
 
-        drawGraph()
+        for time in todayData:
+            temps.append(todayData[time]['T3H'])
+            humidities.append(todayData[time]['REH'])
+
+        drawGraph(temps, humidities)
 
     elif Option == '2' and GeoData['x'] != 'error':
         medium_term_weather_text()
-        drawGraph()
+        drawGraph(temps, humidities)
 
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
@@ -181,6 +194,8 @@ def ButtonAction():
 
 def medium_term_weather_text():
     global GeoData
+    cityName = ''
+
     time = dateCalculate('0000')
     todayData = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], 'today')
     tomorrowData = getApi_weather_for_a_day(GeoData['x'],GeoData['y'], 'tomorrow')
@@ -188,7 +203,11 @@ def medium_term_weather_text():
     printNearWeatherText(time,todayData)
     tomorrowTime = time + datetime.timedelta(1)
     printNearWeatherText(tomorrowTime, tomorrowData)
-    mediumTermWeather3to10Text(time, GeoData['mapdata']['results'][0]['address_components'][0]['long_name'])
+
+    for data in GeoData['mapdata']['results'][0]['address_components']:
+        if 'locality' in data['types']:
+            cityName = data['long_name']
+    mediumTermWeather3to10Text(time, cityName)
 
 def printNearWeatherText(timeData, weatherData):
     timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000']
@@ -305,10 +324,10 @@ def InitGraph():
     global toolbar
     f=matplotlib.figure.Figure(figsize=(5,3),dpi=100)
     a = f.add_subplot(111)
-    x_value = [1, 3, 5, 7]
-    y_value = [3, 9, 15, 21]
-    x2_value = [2, 4, 6, 8]
-    y2_value = [3, 9, 15, 21]
+    x_value = [0, 0, 0, 0]
+    y_value = [0, 0, 0, 0]
+    x2_value = [0, 0, 0, 0]
+    y2_value = [0, 0, 0, 0]
 
     axis = a.plot()
     bar = a.bar(x_value, y_value, linewidth=0.1, label='tem', color='r')
@@ -330,16 +349,21 @@ def InitGraph():
     #label.place(x=0, y=0)
 
 
-def drawGraph():
+def drawGraph(temps, humidities):
     global canvas
     canvas.get_tk_widget().pack_forget()
 
     f = matplotlib.figure.Figure(figsize=(5, 3), dpi=100)
     a = f.add_subplot(111)
-    x_value = [1, 3, 5, 7,9,11,13,15]
-    y_value = [3, 9, 15, 21,27,33,39,45]
-    x2_value = [2, 4, 6, 8]
-    y2_value = [100, 1000, 100000, 80000]
+
+    x_value = []
+    x2_value = []
+    for i in range(0, len(temps)):
+        x_value.append(1 + i*2)
+    y_value = temps
+    for i in range(1, len(humidities)+1):
+        x2_value.append(i*2)
+    y2_value = humidities
 
     axis = a.plot()
     bar = a.bar(x_value, y_value, linewidth=0.1, label='tem', color='r')

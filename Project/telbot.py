@@ -27,14 +27,18 @@ def handle(msg):
         elif citySelected == True and forecastType == "오늘날씨":
             city = msg['text']
             GeoData = SearchGeo(city)
-            PM10_level, air_quality = getApi_air_quality_forecast(GeoData['mapdata']['results'][0]['address_components'][1]['long_name'])
+            for data in GeoData['mapdata']['results'][0]['address_components']:
+                if 'administrative_area_level_1' in data['types']:
+                    location = data['long_name']
+            PM10_level, air_quality = getApi_air_quality_forecast(location)
             base_date = dateCalculate('0200')
             year = base_date.strftime("%Y")
             month = base_date.strftime("%m")
             day = base_date.strftime("%d")
             bot.sendMessage(chat_id, "날짜: " + year + "년 " + month + "월 " + day + "일" + "\n\n")
             bot.sendMessage(chat_id, "현재 미세먼지 농도 : " + PM10_level + " " + air_quality + "\n\n")
-            bot.sendMessage(chat_id, weather_for_today(GeoData['x'], GeoData['y']))
+            data = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], "today")
+            bot.sendMessage(chat_id, weather_for_today(data))
             citySelected = False
         else:
             #모르는 명령어 입력시

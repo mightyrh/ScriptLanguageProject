@@ -104,12 +104,12 @@ def getApi_medium_term_temperature(cityName):
     response_body = urlopen(request).read()
     return extractData_medium_term_temperature(response_body)
 
-def getApi_air_quality_forecast(cityName):
+def getApi_air_quality_forecast(location):
     url = makeUrl_air_quality_forecast('PM10')
     print(url)
     request = Request(url)
     response_body = urlopen(request).read()
-    return extractData_air_quality_forecast(response_body, cityName)
+    return extractData_air_quality_forecast(response_body, location)
 
 ########################################################################
 # 0200 시 이전에는 전날 기준으로 가져오고
@@ -206,6 +206,8 @@ def extractData_medium_term_temperature(strXml):
     return temperature
 
 def extractData_air_quality_forecast(strXml, location):
+    PM10_Level = '-999'
+    air_quality = ''
     location = getCityName_In_English(location)
 
     dom = parseString(strXml)
@@ -291,6 +293,7 @@ def getLocationCode_SKY(cityName):
     return locationCode
 
 def getCityName_In_English(cityName):
+    cityName_In_Korean = ''
     if cityName == '서울특별시':cityName_In_Korean = 'seoul'
     elif cityName == '부산광역시':cityName_In_Korean = 'busan'
     elif cityName == '대구광역시':cityName_In_Korean = 'daegu'
