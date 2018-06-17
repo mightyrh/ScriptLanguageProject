@@ -39,23 +39,22 @@ def makeUrl_real_time_weather(x, y):
 # 구름 양, 비 등 3 ~ 7일까지 오전 오후 예보
 # 8 ~ 10일까지 하루 예보
 def makeUrl_medium_term_forecast(locationCode):   # 중기 기온예보와 지역 코드 다름...
-    time = dateCalculate('0600') + '0600'
+    time = dateCalculate('0000')
 
     url = 'http://newsky2.kma.go.kr/service/MiddleFrcstInfoService/getMiddleLandWeather'
     ServiceKey = 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'
     queryParams = '?' + 'serviceKey=' + ServiceKey + '&' + urlencode(
-        {quote_plus('regId'): locationCode, quote_plus('tmFc'): time,
+        {quote_plus('regId'): locationCode, quote_plus('tmFc'): time.strftime('%Y%m%d') + '0600',
          quote_plus('numOfRows'): '1', quote_plus('pageNo'): '1'})
     return url + queryParams
 
 # 3 ~ 10일까지 최저, 최고기온 예보
 def makeUrl_medium_term_temperature(cityCode):    # 시간 201806050600 형식으로 정해줘야 함 도시 코드는 문서 참조
-    time = dateCalculate('0600') + '0600'
-
+    time = dateCalculate('0000')
     url = 'http://newsky2.kma.go.kr/service/MiddleFrcstInfoService/getMiddleTemperature'
     ServiceKey= 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'
     queryParams = '?' + 'serviceKey=' + ServiceKey + '&' + urlencode(
-        {quote_plus('regId'): cityCode, quote_plus('tmFc'): time, #'201707200600',
+        {quote_plus('regId'): cityCode, quote_plus('tmFc'): time.strftime('%Y%m%d') + '0600', #'201707200600',
          quote_plus('pageNo'): '1', quote_plus('numOfRows'): '1'})
     return url + queryParams
 
@@ -244,30 +243,30 @@ def returnCat():
             'T3H': -999, 'TMN': -999, 'TMX': -999}
 
 def getLocationCode(cityName):
-    if cityName == '서울':return '11B10101'
-    elif cityName == '인천':return '11B20201'
-    elif cityName == '수원':return '11B20601'
-    elif cityName == '파주':return '11B20305'
-    elif cityName == '춘천':return '11D10301'
-    elif cityName == '원주':return '11D10401'
-    elif cityName == '강릉':return '11D20501'
-    elif cityName == '대전':return '11C20401'
-    elif cityName == '서산':return '11C20101'
-    elif cityName == '세종':return '11C20404'
-    elif cityName == '청주':return '11C10301'
-    elif cityName == '제주':return '11G00201'
-    elif cityName == '서귀포':return '11G00401'
-    elif cityName == '광주':return '11F20501'
-    elif cityName == '목포':return '21F20801'
-    elif cityName == '여수':return '11F20401'
-    elif cityName == '전주':return '11F10201'
-    elif cityName == '군산':return '21F10501'
-    elif cityName == '부산':return '11H20201'
-    elif cityName == '울산':return '11H20101'
-    elif cityName == '창원':return '11H20301'
-    elif cityName == '대구':return '11H10701'
-    elif cityName == '안동':return '11H10501'
-    elif cityName == '포항':return '11H10201'
+    if cityName == '서울특별시':return '11B10101'
+    elif cityName == '인천광역시':return '11B20201'
+    elif cityName == '수원시':return '11B20601'
+    elif cityName == '파주시':return '11B20305'
+    elif cityName == '춘천시':return '11D10301'
+    elif cityName == '원주시':return '11D10401'
+    elif cityName == '강릉시':return '11D20501'
+    elif cityName == '대전시':return '11C20401'
+    elif cityName == '서산시':return '11C20101'
+    elif cityName == '세종시':return '11C20404'
+    elif cityName == '청주시':return '11C10301'
+    elif cityName == '제주시':return '11G00201'
+    elif cityName == '서귀포시':return '11G00401'
+    elif cityName == '광주광역시':return '11F20501'
+    elif cityName == '목포시':return '21F20801'
+    elif cityName == '여수시':return '11F20401'
+    elif cityName == '전주시':return '11F10201'
+    elif cityName == '군산시':return '21F10501'
+    elif cityName == '부산광역시':return '11H20201'
+    elif cityName == '울산광역시':return '11H20101'
+    elif cityName == '창원시':return '11H20301'
+    elif cityName == '대구광역시':return '11H10701'
+    elif cityName == '안동시':return '11H10501'
+    elif cityName == '포항시':return '11H10201'
 
 def getLocationCode_SKY(cityName):
     cityCode = getLocationCode(cityName)

@@ -119,6 +119,7 @@ def ButtonAction():
 
     global currentTempHumidity
     global mapdata
+    global GeoData
 
     Option = str(int(float(SearchOption.yview()[1])*2))
     print(SearchOption.get(Option+".0"))
@@ -143,7 +144,7 @@ def ButtonAction():
 
     showWeatherIcon()
 
-    if GeoData['x'] != "error":
+    if Option == '1' and GeoData['x'] != "error":
         currentTempHumidity = getApi_real_time_weather(GeoData['x'], GeoData['y'])
         weatherForToday = weather_for_today(GeoData['x'], GeoData['y'])
         PM10_level, air_quality = getApi_air_quality_forecast(mapdata['results'][0]['address_components'][1]['long_name'])
@@ -168,12 +169,119 @@ def ButtonAction():
 
         drawGraph()
 
+    elif Option == '2' and GeoData['x'] != 'error':
+        medium_term_weather_text()
+        drawGraph()
 
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
 
     RenderText.configure(state='disabled')
 
+
+def medium_term_weather_text():
+    global GeoData
+    time = dateCalculate('0000')
+    todayData = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], 'today')
+    tomorrowData = getApi_weather_for_a_day(GeoData['x'],GeoData['y'], 'tomorrow')
+
+    printNearWeatherText(time,todayData)
+    tomorrowTime = time + datetime.timedelta(1)
+    printNearWeatherText(tomorrowTime, tomorrowData)
+    mediumTermWeather3to10Text(time, GeoData['mapdata']['results'][0]['address_components'][0]['long_name'])
+
+def printNearWeatherText(timeData, weatherData):
+    timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000']
+    sky = 0
+    rainType = 0
+
+    for time in timeList:
+        if int(weatherData[time]['SKY']) > sky:
+            sky = int(weatherData[time]['SKY'])
+
+    for time in timeList:
+        if int(weatherData[time]['PTY']) > rainType:
+            rainType = int(weatherData[time]['PTY'])
+
+    if sky == 1:
+        skyText = '맑음'
+    elif sky == 2:
+        skyText = '구름조금'
+    elif sky == 3:
+        skyText = '구름많음'
+    elif sky == 4:
+        skyText = '흐림'
+
+    if rainType == 0:
+        rainTypeText = '없음'
+    elif rainType == 1:
+        rainTypeText = '비'
+    elif rainType == 2:
+        rainTypeText = '진눈깨비'
+    elif rainType == 3:
+        rainTypeText = '눈'
+
+    if rainType != 0:
+        forecast = rainTypeText
+    else:
+        forecast = skyText
+
+    RenderText.insert(INSERT, "[")
+    RenderText.insert(INSERT, timeData.strftime('%Y') + '년 ' + timeData.strftime('%m') + '월 ' + timeData.strftime('%d') + '일]')
+    RenderText.insert(INSERT, "\n")
+    RenderText.insert(INSERT, forecast + '\n')
+    RenderText.insert(INSERT, '최저온도' + str(weatherData['0600']['TMN']) + '\n')
+    RenderText.insert(INSERT, '최고온도' + str(weatherData['1500']['TMX']) + '\n')
+    RenderText.insert(INSERT, "\n")
+    RenderText.insert(INSERT, "\n")
+
+def mediumTermWeather3to10Text(timeData, cityName):
+    forecasts = getApi_medium_term_forecast(cityName)
+    temperatures = getApi_medium_term_temperature(cityName)
+
+    for i in range(3,10):
+        if i == 3:
+            forecastDate = 'wf3Pm'
+            minTemp = 'taMin3'
+            maxTemp = 'taMax3'
+        elif i == 4:
+            forecastDate = 'wf4Pm'
+            minTemp = 'taMin4'
+            maxTemp = 'taMax4'
+        elif i == 5:
+            forecastDate = 'wf5Pm'
+            minTemp = 'taMin5'
+            maxTemp = 'taMax5'
+        elif i == 6:
+            forecastDate = 'wf6Pm'
+            minTemp = 'taMin6'
+            maxTemp = 'taMax6'
+        elif i == 7:
+            forecastDate = 'wf7Pm'
+            minTemp = 'taMin7'
+            maxTemp = 'taMax7'
+        elif i == 8:
+            forecastDate = 'wf8'
+            minTemp = 'taMin8'
+            maxTemp = 'taMax8'
+        elif i == 9:
+            forecastDate = 'wf9'
+            minTemp = 'taMin9'
+            maxTemp = 'taMax9'
+        elif i == 10:
+            forecastDate = 'wf10'
+            minTemp = 'taMin10'
+            maxTemp = 'taMax10'
+
+        time = timeData + datetime.timedelta(i)
+        RenderText.insert(INSERT, "[")
+        RenderText.insert(INSERT, time.strftime('%Y') + '년 ' + time.strftime('%m') + '월 ' + time.strftime('%d') + '일]')
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, forecasts[forecastDate] + '\n')
+        RenderText.insert(INSERT, '최저온도' + str(temperatures[minTemp]) + '\n')
+        RenderText.insert(INSERT, '최고온도' + str(temperatures[maxTemp]) + '\n')
+        RenderText.insert(INSERT, "\n")
+        RenderText.insert(INSERT, "\n")
 
 def ButtonSend():
 
