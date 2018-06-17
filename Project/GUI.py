@@ -317,9 +317,7 @@ def mediumTermWeather3to10Text(timeData, cityName):
 
 def ButtonSend():
 
-    emailText = "날짜" + "[" + currentTempHumidity['date'] + "\t" + currentTempHumidity['time'] + "]" + "\n" + \
-                mapdata["results"][0]["formatted_address"] + "\n" + \
-                "온도 :" + currentTempHumidity['temp'] + ", 습도 :" + currentTempHumidity['humidity']
+    emailText = RenderText.get(1.0, END)
     sendEmail(emailText)
 
 def showWeatherIcon():
@@ -363,20 +361,21 @@ def InitGraph():
 def drawGraph(temps, humidities):
     global canvas
     canvas.get_tk_widget().pack_forget()
+    timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000', '0300']
 
     f = matplotlib.figure.Figure(figsize=(5, 3), dpi=100)
     a = f.add_subplot(111)
 
     x_value = []
-    x2_value = []
+    #x2_value = []
     for i in range(0, len(temps)):
-        x_value.append(1 + i*2)
+        x_value.append(timeList[i])
     y_value =[]
     for i in temps:
         y_value.append(int(i))
 
-    for i in range(1, len(humidities)+1):
-        x2_value.append(i*2)
+    #for i in range(1, len(humidities)+1):
+    #    x2_value.append(i*2)
     y2_value = []
     for i in humidities:
         y2_value.append(int(i))
@@ -391,7 +390,7 @@ def drawGraph(temps, humidities):
 
 
     a2 = a.twinx()
-    bar2 = a2.bar(x2_value, y2_value, linewidth=0.1, label='hum', color='b')
+    bar2 = a2.bar(x_value, y2_value, linewidth=0.1, label='hum', color='b')
     a2.set_ylabel('Hum', color='b')
     #f.legend()
 
