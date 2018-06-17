@@ -39,7 +39,7 @@ def makeUrl_real_time_weather(x, y):
 # 구름 양, 비 등 3 ~ 7일까지 오전 오후 예보
 # 8 ~ 10일까지 하루 예보
 def makeUrl_medium_term_forecast(locationCode):   # 중기 기온예보와 지역 코드 다름...
-    time = dateCalculate('0000')
+    time = dateCalculate('0600')
 
     url = 'http://newsky2.kma.go.kr/service/MiddleFrcstInfoService/getMiddleLandWeather'
     ServiceKey = 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'
@@ -50,7 +50,7 @@ def makeUrl_medium_term_forecast(locationCode):   # 중기 기온예보와 지역 코드 다
 
 # 3 ~ 10일까지 최저, 최고기온 예보
 def makeUrl_medium_term_temperature(cityCode):    # 시간 201806050600 형식으로 정해줘야 함 도시 코드는 문서 참조
-    time = dateCalculate('0000')
+    time = dateCalculate('0600')
     url = 'http://newsky2.kma.go.kr/service/MiddleFrcstInfoService/getMiddleTemperature'
     ServiceKey= 'XxhDOcI3Bou6oYWUeSJL9vmmwjnVMuiVtPrHJS8C%2Fki4dFcy7vO%2FtIpHop4rco7U1BBIPI7gdLBoMX1lsC1Bdg%3D%3D'
     queryParams = '?' + 'serviceKey=' + ServiceKey + '&' + urlencode(

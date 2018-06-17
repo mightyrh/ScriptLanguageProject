@@ -124,6 +124,7 @@ def ButtonAction():
 
     temps = []
     humidities = []
+    icons = []
     Option = str(int(float(SearchOption.yview()[1])*2))
     print(SearchOption.get(Option+".0"))
 
@@ -182,24 +183,129 @@ def ButtonAction():
             humidities.append(todayData[time]['REH'])
 
         drawGraph(temps, humidities)
+        icons = getIcons(todayData, 'today')
+
 
     elif Option == '2' and GeoData['x'] != 'error':
-        medium_term_weather_text()
+        forecasts = getApi_medium_term_forecast(cityName)  # 3~10일짜리
+        temperatures = getApi_medium_term_temperature(cityName)
+        todayData = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], 'today')
+        tomorrowData = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], 'tomorrow')
+
+        mediumTermSkies = {'today': todayData, 'tomorrow': tomorrowData, 'medium': forecasts}
+
         drawGraph(temps, humidities)
+
+        medium_term_weather_text(todayData, tomorrowData, forecasts, temperatures)
+        icons = getIcons(mediumTermSkies, 'medium')
+
 
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
 
     RenderText.configure(state='disabled')
 
+# dict로 하늘 정보 가져옴 실시간 날씨는 그냥 데이터 통째로 가져옴
+def getIcons(skyDict, forecastType):
+    timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000', '0300']
+    mediumSkyList = ['wf3Pm', 'wf4Pm', 'wf5Pm', 'wf6Pm', 'wf7Pm', 'wf8', 'wf9', 'wf10']
+    skyList = []
+    iconList = []
+    dayNight = ''
+    if forecastType == 'today':
+        for time in timeList:
+            if time == '1800' or time == '2100' or time == '0000' or time == '0300':
+                dayNight = 'night'
+            else:
+                dayNight = 'day'
+            if skyDict[time]['PTY'] != '0':
+                skyList.append([{'PTY' : skyDict[time]['PTY']}, dayNight])
+            else:
+                skyList.append([{'SKY' : skyDict[time]['SKY']}, dayNight])
+        #여기서 리스트에 있는 코드들을 파일 이름으로 바꿔서 다른 리스트에 담고 리턴해준다.
+        for sky in skyList:
+            if sky[0] == {'SKY' : '1'}:
+                if sky[1] == 'day':
+                    iconList.append('day_clear.png')
+                else:
+                    iconList.append('night_clear.png')
+            elif sky[0] == {'SKY' : '2'}:
+                if sky[1] == 'day':
+                    iconList.append('day_cloud_little.png')
+                else:
+                    iconList.append('night_cloud_little.png')
+            elif sky[0] == {'SKY' : '3'} or sky[0] == {'SKY' : '4'}:
+                if sky[1] == 'day':
+                    iconList.append('day_cloud_alot.png')
+                else:
+                    iconList.append('night_cloud_alot.png')
+            elif sky[0] == {'PTY' : '1'}:
+                if sky[1] == 'day':
+                    iconList.append('day_rain.png')
+                else:
+                    iconList.append('night_rain.png')
+            elif sky[0] == {'PTY' : '2'}:
+                if sky[1] == 'day':
+                    iconList.append('day_rain_snow.png')
+                else:
+                    iconList.append('night_rain_snow.png')
+            elif sky[0] == {'PTY' : '3'}:
+                if sky[1] == 'day':
+                    iconList.append('day_snow.png')
+                else:
+                    iconList.append('night_snow.png')
+        return iconList
+    elif forecastType == 'medium':
+        if skyDict['today']['1200']['PTY'] != '0':
+            skyList.append({'PTY': skyDict['today']['1200']['PTY']})
+        else:
+            skyList.append({'SKY': skyDict['today']['1200']['SKY']})
 
-def medium_term_weather_text():
+        if skyDict['tomorrow']['1200']['PTY'] != '0':
+            skyList.append({'PTY': skyDict['tomorrow']['1200']['PTY']})
+        else:
+            skyList.append({'SKY': skyDict['tomorrow']['1200']['SKY']})
+
+        for mediumSky in mediumSkyList:
+            sky = skyDict['medium'][mediumSky]
+            if sky == '맑음':
+                skyList.append('day_clear.png')
+            elif sky == '구름조금':
+                skyList.append('day_cloud_little.png')
+            elif sky == '구름많음' or sky == '흐림':
+                skyList.append('day_cloud_alot.png')
+            elif sky == '구름많고 비' or sky == '흐리고 비':
+                skyList.append('day_rain.png')
+            elif sky == '구름많고 눈' or sky == '흐리고 눈':
+                skyList.append('day_snow.png')
+            elif sky == '구름많고 비/눈' or sky == '흐리고 비/눈':
+                skyList.append('day_rain_snow.png')
+            elif sky == '구름많고 눈/비' or sky == '흐리고 눈/비':
+                skyList.append('day_rain_snow.png')
+
+        for sky in skyList:
+            if sky == {'SKY': '1'}:
+                iconList.append('day_clear.png')
+            elif sky == {'SKY': '2'}:
+                iconList.append('day_cloud_little.png')
+            elif sky == {'SKY': '3'}:
+                iconList.append('day_cloud_alot.png')
+            elif sky == {'PTY': '1'}:
+                iconList.append('day_rain.png')
+            elif sky == {'PTY': '2'}:
+                iconList.append('day_rain_snow.png')
+            elif sky == {'PTY': '3'}:
+                iconList.append('day_snow.png')
+            else:
+                iconList.append(sky)
+
+        return iconList
+
+def medium_term_weather_text(todayData, tomorrowData, forecasts, temperatures):
     global GeoData
     cityName = ''
 
     time = dateCalculate('0000')
-    todayData = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], 'today')
-    tomorrowData = getApi_weather_for_a_day(GeoData['x'],GeoData['y'], 'tomorrow')
 
     printNearWeatherText(time,todayData)
     tomorrowTime = time + datetime.timedelta(1)
@@ -208,7 +314,8 @@ def medium_term_weather_text():
     for data in GeoData['mapdata']['results'][0]['address_components']:
         if 'locality' in data['types']:
             cityName = data['long_name']
-    mediumTermWeather3to10Text(time, cityName)
+    mediumTermWeather3to10Text(time, forecasts, temperatures)
+
 
 def printNearWeatherText(timeData, weatherData):
     timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000']
@@ -255,9 +362,9 @@ def printNearWeatherText(timeData, weatherData):
     RenderText.insert(INSERT, "\n")
     RenderText.insert(INSERT, "\n")
 
-def mediumTermWeather3to10Text(timeData, cityName):
-    forecasts = getApi_medium_term_forecast(cityName)
-    temperatures = getApi_medium_term_temperature(cityName)
+def mediumTermWeather3to10Text(timeData, forecasts, temperatures):
+    #forecasts = getApi_medium_term_forecast(cityName)
+    #temperatures = getApi_medium_term_temperature(cityName)
 
     for i in range(3,10):
         if i == 3:
