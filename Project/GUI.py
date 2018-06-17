@@ -51,19 +51,23 @@ def InitTopText():
     MainText.place(x=20)
 
 def InitSearchListBox():
-    global SearchListBox
-    ListBoxScrollbar = Scrollbar(g_Tk)
-    ListBoxScrollbar.pack()
-    ListBoxScrollbar.place(x=150, y=50)
+    global SearchOption
+    OptionScrollbar = Scrollbar(g_Tk)
 
-    TempFont = font.Font(g_Tk, size=15, weight='bold', family='Consolas')
-    SearchListBox = Listbox(g_Tk, font=TempFont, activestyle='none',width=10, height=1, borderwidth=12, relief='ridge',yscrollcommand=ListBoxScrollbar.set)
+    SearchOption =Text(g_Tk,height = 1,width = 10,borderwidth = 12, relief = 'ridge')
+    SearchOption.insert(INSERT,"오늘날씨\n")
+    SearchOption.insert(END, "10일날씨")
 
-    SearchListBox.insert(1, "오늘날씨")
-    SearchListBox.insert(2, "10일간 날씨")
-    SearchListBox.pack()
-    SearchListBox.place(x=10, y=50)
-    ListBoxScrollbar.config(command=SearchListBox.yview)
+    OptionScrollbar.config(command=SearchOption.yview)
+    SearchOption.config(yscrollcommand = OptionScrollbar.set)
+
+    OptionScrollbar.pack()
+    OptionScrollbar.place(x=130,y=46)
+    SearchOption.pack()
+    SearchOption.place(x=20,y=50)
+
+    SearchOption.configure(state ='disabled')
+
 
 def InitInputLabel():
     global InputLabel
@@ -115,6 +119,9 @@ def ButtonAction():
 
     global currentTempHumidity
     global mapdata
+
+    Option = str(int(float(SearchOption.yview()[1])*2))
+    print(SearchOption.get(Option+".0"))
 
     address = InputLabel.get()
     GeoData = map.SearchGeo(address)
@@ -176,19 +183,19 @@ def ButtonSend():
     sendEmail(emailText)
 
 def showWeatherIcon():
+    global img
 
-    BackGround.configure(state='normal')
     day_clear = Image.open('day_clear.png')
-    day_clear = ImageTk.PhotoImage(day_clear)
-    BackGround.create_image(190, 460, image=day_clear)
+    img = ImageTk.PhotoImage(day_clear)
+    BackGround.create_image(190, 460, image=img)
     BackGround.pack()
-    BackGround.place(x=100, y=200)
-    BackGround.configure(state='disable')
+    BackGround.place(x=0, y=0)
+
 
 def InitGraph():
     global canvas
-
-    f=matplotlib.figure.Figure(figsize=(5,4),dpi=100)
+    global toolbar
+    f=matplotlib.figure.Figure(figsize=(5,3),dpi=100)
     a = f.add_subplot(111)
     x_value = [1, 3, 5, 7]
     y_value = [3, 9, 15, 21]
@@ -196,12 +203,12 @@ def InitGraph():
     y2_value = [3, 9, 15, 21]
 
     axis = a.plot()
-    bar = a.bar(x_value, y_value, linewidth=0.5, label='tem', color='r')
+    bar = a.bar(x_value, y_value, linewidth=0.1, label='tem', color='r')
     a.set_xlabel('Time',color='g')
     a.set_ylabel('Tem',color='r')
 
     a2 = a.twinx()
-    bar2 = a2.bar(x2_value, y2_value, linewidth=0.5, label='hum', color='b')
+    bar2 = a2.bar(x2_value, y2_value, linewidth=0.1, label='hum', color='b')
     a2.set_ylabel('Hum', color='b')
     f.legend()
 
@@ -219,20 +226,20 @@ def drawGraph():
     global canvas
     canvas.get_tk_widget().pack_forget()
 
-    f = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
+    f = matplotlib.figure.Figure(figsize=(5, 3), dpi=100)
     a = f.add_subplot(111)
-    x_value = [1, 3, 5, 7]
-    y_value = [3, 9, 15, 21]
+    x_value = [1, 3, 5, 7,9,11,13,15]
+    y_value = [3, 9, 15, 21,27,33,39,45]
     x2_value = [2, 4, 6, 8]
     y2_value = [100, 1000, 100000, 80000]
 
     axis = a.plot()
-    bar = a.bar(x_value, y_value, linewidth=0.5, label='tem', color='r')
+    bar = a.bar(x_value, y_value, linewidth=0.1, label='tem', color='r')
     a.set_xlabel('Time', color='g')
     a.set_ylabel('Tem', color='r')
 
     a2 = a.twinx()
-    bar2 = a2.bar(x2_value, y2_value, linewidth=0.5, label='hum', color='b')
+    bar2 = a2.bar(x2_value, y2_value, linewidth=0.1, label='hum', color='b')
     a2.set_ylabel('Hum', color='b')
     f.legend()
 
