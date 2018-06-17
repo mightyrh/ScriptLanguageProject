@@ -182,11 +182,14 @@ def ButtonAction():
             temps.append(todayData[time]['T3H'])
             humidities.append(todayData[time]['REH'])
 
-        drawGraph(temps, humidities)
+        drawGraph(temps, humidities, 'today')
         icons = getIcons(todayData, 'today')
 
 
     elif Option == '2' and GeoData['x'] != 'error':
+        minTemps = []
+        maxTemps = []
+        minmaxTemp = ['taMin3', 'taMax3', 'taMin4', 'taMax4', 'taMin5', 'taMax5', 'taMin6', 'taMax6', 'taMin7', 'taMax7', 'taMin8', 'taMax8', 'taMin9', 'taMax9', 'taMin10', 'taMax10']
         forecasts = getApi_medium_term_forecast(cityName)  # 3~10일짜리
         temperatures = getApi_medium_term_temperature(cityName)
         todayData = getApi_weather_for_a_day(GeoData['x'], GeoData['y'], 'today')
@@ -194,7 +197,12 @@ def ButtonAction():
 
         mediumTermSkies = {'today': todayData, 'tomorrow': tomorrowData, 'medium': forecasts}
 
-        drawGraph(temps, humidities)
+        for i in range(0, 16):
+            if i % 2 == 0:
+                minTemps.append(temperatures[minmaxTemp[i]])
+            elif i % 2 == 1:
+                maxTemps.append(temperatures[minmaxTemp[i]])
+        drawGraph(maxTemps, minTemps, 'medium')
 
         medium_term_weather_text(todayData, tomorrowData, forecasts, temperatures)
         icons = getIcons(mediumTermSkies, 'medium')
@@ -453,7 +461,7 @@ def InitGraph():
     #label.place(x=0, y=0)
 
 
-def drawGraph(temps, humidities):
+def drawGraph(graph1Data, graph2Data, graphType):
     global canvas
     canvas.get_tk_widget().pack_forget()
     timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000', '0300']
@@ -462,20 +470,20 @@ def drawGraph(temps, humidities):
     a = f.add_subplot(111)
 
     x_value = []
-    #x2_value = []
-    for i in range(0, len(temps)):
+    y_value = []
+    y2_value = []
+
+    for i in range(0, len(graph1Data)):
         x_value.append(timeList[i])
-    y_value =[]
-    for i in temps:
-        y_value.append(int(i))
+
+    for data in graph1Data:
+        y_value.append(int(data))
 
     #for i in range(1, len(humidities)+1):
     #    x2_value.append(i*2)
-    y2_value = []
-    for i in humidities:
-        y2_value.append(int(i))
 
-
+    for data in graph2Data:
+        y2_value.append(int(data))
 
     axis = a.plot(x_value, y_value, color='r')
     a.grid(True)
@@ -483,12 +491,20 @@ def drawGraph(temps, humidities):
     a.set_ylabel('Tem', color='r')
     a.set_ylim([-10,40])
 
+    if graphType == 'today':
+        a2 = a.twinx()
+        bar2 = a2.bar(x_value, y2_value, width=0.3, label='hum', color='b')
+        a2.set_ylabel('Hum', color='b')
+        a2.set_ylim(0,300)
+        #f.legend()
 
-    a2 = a.twinx()
-    bar2 = a2.bar(x_value, y2_value, width=0.3, label='hum', color='b')
-    a2.set_ylabel('Hum', color='b')
-    a2.set_ylim(0,300)
-    #f.legend()
+    elif graphType == 'medium':
+        a2 = f.add_subplot(111)
+        a2.plot(x_value, y2_value, color='b')
+        a2.grid(True)
+        a2.set_xlabel('Time', color='g')
+        a2.set_ylabel('Tem', color='b')
+        a2.set_ylim([-10, 40])
 
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
