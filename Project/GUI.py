@@ -10,6 +10,7 @@ from multiprocessing import Process, Queue
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
+import numpy as np
 
 day_clear = Image.open('day_clear.png')
 day_cloud_little = Image.open('day_cloud_little.png')
@@ -30,6 +31,18 @@ matplotlib.use('TkAgg')
 g_Tk = Tk()
 g_Tk.geometry("850x900+750+200")
 g_Tk.title("오늘의 날씨는?")
+
+global temp_ylist
+global hum_ylist
+temp_ylist =[]
+hum_ylist =[]
+
+for i in range(-30,40,2):
+    temp_ylist.append(i)
+
+for i in range(0,100,2):
+    hum_ylist.append(i)
+
 
 DataList = []
 def InitBack():
@@ -324,8 +337,8 @@ def InitGraph():
     global toolbar
     f=matplotlib.figure.Figure(figsize=(5,3),dpi=100)
     a = f.add_subplot(111)
-    x_value = [0, 0, 0, 0]
-    y_value = [0, 0, 0, 0]
+    x_value = [1, 2, 3, 4]
+    y_value = [15, 1, 21, 45]
     x2_value = [0, 0, 0, 0]
     y2_value = [0, 0, 0, 0]
 
@@ -340,8 +353,6 @@ def InitGraph():
     f.legend()
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
-    toolbar = NavigationToolbar2TkAgg(canvas, g_Tk)
-    toolbar.update()
     canvas.get_tk_widget().pack(side=tkinter.BOTTOM, fill=tkinter.X, expand=False)
 
     #label = Label(root, image=image, height=400, width=400)
@@ -360,20 +371,29 @@ def drawGraph(temps, humidities):
     x2_value = []
     for i in range(0, len(temps)):
         x_value.append(1 + i*2)
-    y_value = temps
+    y_value =[]
+    for i in temps:
+        y_value.append(int(i))
+
     for i in range(1, len(humidities)+1):
         x2_value.append(i*2)
-    y2_value = humidities
+    y2_value = []
+    for i in humidities:
+        y2_value.append(int(i))
 
-    axis = a.plot()
-    bar = a.bar(x_value, y_value, linewidth=0.1, label='tem', color='r')
+
+
+    axis = a.plot(x_value, y_value, color='r')
+
     a.set_xlabel('Time', color='g')
     a.set_ylabel('Tem', color='r')
+    a.set_ylim([-10,40])
+
 
     a2 = a.twinx()
     bar2 = a2.bar(x2_value, y2_value, linewidth=0.1, label='hum', color='b')
     a2.set_ylabel('Hum', color='b')
-    f.legend()
+    #f.legend()
 
 
     canvas = FigureCanvasTkAgg(f, g_Tk)
