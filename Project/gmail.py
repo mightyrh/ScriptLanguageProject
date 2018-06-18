@@ -12,8 +12,8 @@ def sendEmail(text):
 
     #htmlFileName = "logo.html"
 
-    senderAddr = "mightyrh@gmail.com"
-    recipientAddr = "mightyrh@gmail.com" # 내가 나한테
+    senderAddr = "ajr7875@gmail.com"
+    recipientAddr = "ajr7875@gmail.com" # 내가 나한테
 
     msg = MIMEText(text)
     msg['Subject'] = "Weather forecast"

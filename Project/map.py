@@ -30,7 +30,7 @@ def SearchGeo(search):#위도,경도 반환
 
 
 def mapimage(lat, lng):
-    url = "https://maps.googleapis.com/maps/api/staticmap?center="+str(lat)+","+str(lng) +"&zoom=13&size=400x400&format=jpg&key=AIzaSyCWJAM-nuDT2BaF08b6VR9dQXn3um7puaA"
+    url = "https://maps.googleapis.com/maps/api/staticmap?center="+str(lat)+","+str(lng) +"&zoom=15&size=400x400&format=jpg&key=AIzaSyCWJAM-nuDT2BaF08b6VR9dQXn3um7puaA"
     print(url)
     with urlopen(url) as u:
         raw_data = u.read()

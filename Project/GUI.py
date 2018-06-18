@@ -8,9 +8,12 @@ from gmail import*
 from telbot import*
 from multiprocessing import Process, Queue
 import matplotlib
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-import numpy as np
+from matplotlib import font_manager,rc
+font_name = font_manager.FontProperties(fname="c:/Windows/Fonts/H2PORL.TTF").get_name()
+rc('font', family=font_name)
 
 day_clear = Image.open('day_clear.png')
 day_cloud_little = Image.open('day_cloud_little.png')
@@ -475,6 +478,7 @@ def InitGraph():
 
 def drawGraph(graph1Data, graph2Data, graphType):
     global canvas
+    plt.rcParams['axes.unicode_minus'] = False
     canvas.get_tk_widget().pack_forget()
     timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000', '0300']
     dayList = []
@@ -482,8 +486,8 @@ def drawGraph(graph1Data, graph2Data, graphType):
     for i in range(0, 10):
         if i == 2:
             date += datetime.timedelta(1)
-        date += datetime.timedelta(1)
         dayList.append(date.strftime('%m') + ' ' + date.strftime('%d'))
+        date += datetime.timedelta(1)
 
     f = matplotlib.figure.Figure(figsize=(5, 3), dpi=100)
     a = f.add_subplot(111)
@@ -510,23 +514,24 @@ def drawGraph(graph1Data, graph2Data, graphType):
 
     axis = a.plot(x_value, y_value, color='r')
     a.grid(True)
-    a.set_xlabel('Time', color='g')
-    a.set_ylabel('Tem', color='r')
-    a.set_ylim([-10,40])
+    a.set_xlabel('시간', color='g')
 
     if graphType == 'today':
+        a.set_ylabel('기온', color='r')
+        a.set_ylim([-10, 40])
         a2 = a.twinx()
         bar2 = a2.bar(x_value, y2_value, width=0.3, label='hum', color='b')
-        a2.set_ylabel('Hum', color='b')
+        a2.set_ylabel('습도', color='b')
         a2.set_ylim(0,300)
         #f.legend()
 
     elif graphType == 'medium':
-        a2 = f.add_subplot(111)
+        a.set_ylabel('최고기온', color='r')
+        a.set_ylim([-10, 40])
+        a2 = a.twinx()
         a2.plot(x_value, y2_value, color='b')
-        a2.grid(True)
-        a2.set_xlabel('Time', color='g')
-        a2.set_ylabel('Tem', color='b')
+        a2.set_xlabel('날짜', color='g')
+        a2.set_ylabel('최저기온', color='b')
         a2.set_ylim([-10, 40])
 
 
@@ -539,6 +544,7 @@ def drawGraph(graph1Data, graph2Data, graphType):
 
 
 if __name__ == '__main__':
+
     InitBack()
     InitTopText()
     InitMapLabel()
