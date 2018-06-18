@@ -16,7 +16,7 @@ def sendEmail(text):
     recipientAddr = "mightyrh@gmail.com" # 내가 나한테
 
     msg = MIMEText(text)
-    msg['Subject'] = "Weather forecast test"
+    msg['Subject'] = "Weather forecast"
     msg['From'] = senderAddr
     msg['To'] = recipientAddr
 

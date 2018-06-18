@@ -153,8 +153,6 @@ def ButtonAction():
     mapLabel.pack()
     mapLabel.place(x=400, y=0)
 
-    showWeatherIcon()
-
     if Option == '1' and GeoData['x'] != "error":
         currentTempHumidity = getApi_real_time_weather(GeoData['x'], GeoData['y'])
         weatherForToday = weather_for_today(todayData)
@@ -184,6 +182,7 @@ def ButtonAction():
 
         drawGraph(temps, humidities, 'today')
         icons = getIcons(todayData, 'today')
+        drawIcons(icons)
 
 
     elif Option == '2' and GeoData['x'] != 'error':
@@ -197,6 +196,11 @@ def ButtonAction():
 
         mediumTermSkies = {'today': todayData, 'tomorrow': tomorrowData, 'medium': forecasts}
 
+        minTemps.append(str(int(float(todayData['0600']['TMN']))))
+        minTemps.append(str(int(float(tomorrowData['0600']['TMN']))))
+        maxTemps.append(str(int(float(todayData['1500']['TMX']))))
+        maxTemps.append(str(int(float(tomorrowData['1500']['TMX']))))
+
         for i in range(0, 16):
             if i % 2 == 0:
                 minTemps.append(temperatures[minmaxTemp[i]])
@@ -206,12 +210,30 @@ def ButtonAction():
 
         medium_term_weather_text(todayData, tomorrowData, forecasts, temperatures)
         icons = getIcons(mediumTermSkies, 'medium')
-
+        drawIcons(icons)
 
     else:
         RenderText.insert(INSERT,"제대로된 주소를 입력해주세요")
 
     RenderText.configure(state='disabled')
+
+def drawIcons(icons):
+    global imgs
+    imgs = []
+    if len(icons) == 8:
+        for i in range(0,8):
+            icon = Image.open(icons[i])
+            imgs.append(ImageTk.PhotoImage(icon))
+            BackGround.create_image(150 + i * 80, 520, image=imgs[i])
+            BackGround.pack()
+            BackGround.place(x=0, y=0)
+    elif len(icons) == 10:
+        for i in range(0,10):
+            icon = Image.open(icons[i])
+            imgs.append(ImageTk.PhotoImage(icon))
+            BackGround.create_image(135 + i * 65, 520, image=imgs[i])
+            BackGround.pack()
+            BackGround.place(x=0, y=0)
 
 # dict로 하늘 정보 가져옴 실시간 날씨는 그냥 데이터 통째로 가져옴
 def getIcons(skyDict, forecastType):
@@ -423,16 +445,6 @@ def ButtonSend():
     emailText = RenderText.get(1.0, END)
     sendEmail(emailText)
 
-def showWeatherIcon():
-    global img
-
-    day_clear = Image.open('day_clear.png')
-    img = ImageTk.PhotoImage(day_clear)
-    BackGround.create_image(190, 460, image=img)
-    BackGround.pack()
-    BackGround.place(x=0, y=0)
-
-
 def InitGraph():
     global canvas
     global toolbar
@@ -465,6 +477,13 @@ def drawGraph(graph1Data, graph2Data, graphType):
     global canvas
     canvas.get_tk_widget().pack_forget()
     timeList = ['0600', '0900', '1200', '1500', '1800', '2100', '0000', '0300']
+    dayList = []
+    date = dateCalculate('0600')
+    for i in range(0, 10):
+        if i == 2:
+            date += datetime.timedelta(1)
+        date += datetime.timedelta(1)
+        dayList.append(date.strftime('%m') + ' ' + date.strftime('%d'))
 
     f = matplotlib.figure.Figure(figsize=(5, 3), dpi=100)
     a = f.add_subplot(111)
@@ -473,8 +492,12 @@ def drawGraph(graph1Data, graph2Data, graphType):
     y_value = []
     y2_value = []
 
-    for i in range(0, len(graph1Data)):
-        x_value.append(timeList[i])
+    if len(graph1Data) == 8:
+        for i in range(0, len(graph1Data)):
+            x_value.append(timeList[i])
+    elif len(graph1Data) == 10:
+        for i in range(0, len(graph1Data)):
+            x_value.append(dayList[i])
 
     for data in graph1Data:
         y_value.append(int(data))
